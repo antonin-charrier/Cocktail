@@ -6,8 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Front\Index.html" />
+    <None Include="Front\Cocktail.elm" />
+    <None Include="Front\Cocktail.js" />
     <Compile Include="Program.fs" />
   </ItemGroup>
+
+  <ItemGroup />
+
+  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="Suave" Version="2.5.5" />
