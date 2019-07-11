@@ -325,7 +325,18 @@ Temporary Items
 
 ### XamarinStudio ###
 bin/
-obj/
+**/obj
+**/obj/
+**\\obj
+**\\obj\
+Cocktail/Cocktail/obj
+Cocktail/Cocktail/obj/
+Cocktail/obj
+Cocktail/obj/
+Cocktail\\Cocktail\\obj\\
+Cocktail\\Cocktail\\obj
+Cocktail\\obj\\
+Cocktail\\obj
 *.userprefs
 
 

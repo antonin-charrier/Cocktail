@@ -1,8 +1,0 @@
-C:\Users\daubi\git\Cocktail\Cocktail\Cocktail\bin\Debug\netcoreapp2.1\Cocktail.deps.json
-C:\Users\daubi\git\Cocktail\Cocktail\Cocktail\bin\Debug\netcoreapp2.1\Cocktail.runtimeconfig.json
-C:\Users\daubi\git\Cocktail\Cocktail\Cocktail\bin\Debug\netcoreapp2.1\Cocktail.runtimeconfig.dev.json
-C:\Users\daubi\git\Cocktail\Cocktail\Cocktail\bin\Debug\netcoreapp2.1\Cocktail.dll
-C:\Users\daubi\git\Cocktail\Cocktail\Cocktail\obj\Debug\netcoreapp2.1\Cocktail.fsprojAssemblyReference.cache
-C:\Users\daubi\git\Cocktail\Cocktail\Cocktail\obj\Debug\netcoreapp2.1\Cocktail.fsproj.CoreCompileInputs.cache
-C:\Users\daubi\git\Cocktail\Cocktail\Cocktail\obj\Debug\netcoreapp2.1\Cocktail.AssemblyInfoInputs.cache
-C:\Users\daubi\git\Cocktail\Cocktail\Cocktail\obj\Debug\netcoreapp2.1\Cocktail.AssemblyInfo.fs
