@@ -1,56 +1,67 @@
-main =
-  Html.program
-    { init = init
-    , view = view
-    , update = update
-    , subscriptions = subscriptions
-    }
-
-	module Main exposing (main)
+module Cocktail exposing (..)
 
 import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html exposing (Html, text, pre)
+import Http
 
+-- MAIN
 
-type alias Model =
-    { count : Int }
+main =
+  Browser.element
+    { init = init
+    , update = update
+    , subscriptions = subscriptions
+    , view = view
+    }
 
+-- MODEL
 
-initialModel : Model
-initialModel =
-    { count = 0 }
+type Model
+  = Failure
+  | Loading
+  | Success String
 
+init : () -> (Model, Cmd Msg)
+init _ =
+  ( Loading
+  , Http.get
+      { url = "http://localhost:8080/test/"
+      , expect = Http.expectString GotText
+      }
+  )
+
+-- UPDATE
 
 type Msg
-    = Increment
-    | Decrement
+  = GotText (Result Http.Error String)
 
-
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-    case msg of
-        Increment ->
-            { model | count = model.count + 1 }
+  case msg of
+    GotText result ->
+      case result of
+        Ok fullText ->
+          (Success fullText, Cmd.none)
 
-        Decrement ->
-            { model | count = model.count - 1 }
+        Err _ ->
+          (Failure, Cmd.none)
 
+-- SUBSCRIPTIONS
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.none
+
+-- VIEW
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ button [ onClick Increment ] [ text "+1" ]
-        , div [] [ text <| String.fromInt model.count ]
-        , button [ onClick Decrement ] [ text "-1" ]
-        ]
+  case model of
+    Failure ->
+      text "I was unable to load your book."
 
+    Loading ->
+      text "Loading..."
 
-main : Program () Model Msg
-main =
-    Browser.sandbox
-        { init = initialModel
-        , view = view
-        , update = update
-        }
-a
+    Success fullText ->
+      pre [] [ text fullText ]

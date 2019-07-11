@@ -1,6 +1,7 @@
 ﻿open System
 open System.Threading
 open Suave
+open Suave.Successful
 open Suave.Filters
 open Suave.Operators
 
@@ -12,15 +13,13 @@ let main argv =
     let conf = { defaultConfig with cancellationToken = cts.Token ; homeFolder = Some (sourceDir + folder) }  
 
     let app =
-        choose [
-            GET >=> choose
-                [ path "/" >=> Files.browseFileHome "Index.html"
-                ]
-            POST >=> choose
-                [ path "/" >=> Files.browseFileHome "Index.html"
-                ]
-            GET >=> Files.browseHome
-            RequestErrors.NOT_FOUND "Page not found."  
+      choose [
+        GET >=> choose
+            [ path "/" >=> Files.browseFileHome "Index.html"
+              path "/test/" >=> OK "test GET"
+            ]
+        GET >=> Files.browseHome
+        RequestErrors.NOT_FOUND "Page not found."
         ]
 
     let listening, server = startWebServerAsync conf (app)
