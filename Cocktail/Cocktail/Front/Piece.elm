@@ -1,9 +1,13 @@
+module Piece exposing (Coordinates, PieceType(..), Color(..), Vector(..), possibleRegularMoves)
+
+import List.Unique
+
 type alias Coordinates = 
     { x : Int
     , y : Int
     }
 
-type Piece
+type PieceType
     = King
     | Queen
     | Bishop
@@ -21,9 +25,9 @@ type Vector
     | Right
     | Left
 
-possibleRegularMoves : Color -> Piece -> Coordinates -> List (List Coordinates)
-possibleRegularMoves color piece coordinates =
-    case piece of
+possibleRegularMoves : Color -> PieceType -> Coordinates -> List Coordinates
+possibleRegularMoves color pieceType coordinates =
+    case pieceType of
         King ->            
             fullMoves (regularMoves [Up] coordinates) 1
             ++ fullMoves (regularMoves [Down] coordinates) 1
@@ -56,7 +60,7 @@ possibleRegularMoves color piece coordinates =
             ++ fullMoves (regularMoves [Right, Right, Down] coordinates) 1
             ++ fullMoves (regularMoves [Left, Left, Up] coordinates) 1
             ++ fullMoves (regularMoves [Left, Left, Down] coordinates) 1
-        Rook ->            
+        Rook ->        
             fullMoves (regularMoves [Up] coordinates) 8
             ++ fullMoves (regularMoves [Down] coordinates) 8
             ++ fullMoves (regularMoves [Right] coordinates) 8
@@ -74,30 +78,34 @@ possibleRegularMoves color piece coordinates =
                     ++ fullMoves (regularMoves [Down, Right] coordinates) 1
                     ++ fullMoves (regularMoves [Down, Left] coordinates) 1
 
-fullMoves : List Coordinates -> Int -> List (List Coordinates)
+fullMoves : Coordinates -> Int -> List Coordinates
 fullMoves moves multiplicator = 
-    List.map (regularMoveToFullMove moves) (List.range 1 multiplicator)
+    List.Unique.filterDuplicates (List.map (regularMoveToFullMove moves) (List.range 1 multiplicator))
 
-regularMoveToFullMove : List Coordinates -> Int -> List Coordinates
-regularMoveToFullMove moves multiplicator =
-    List.map ( regularMoveToMultipliedMove multiplicator ) moves
+regularMoveToFullMove : Coordinates -> Int -> Coordinates
+regularMoveToFullMove coordinates multiplicator =
+    Coordinates ( coordinates.x * (multiplicator - 1) + coordinates.x ) ( coordinates.y * (multiplicator - 1) + coordinates.y)
 
-regularMoveToMultipliedMove : Int -> Coordinates -> Coordinates
-regularMoveToMultipliedMove multiplicator coordinates =
-    Coordinates ( coordinates.x * multiplicator ) ( coordinates.y * multiplicator )
-
-regularMoves : List Vector -> Coordinates -> List Coordinates
+regularMoves : List Vector -> Coordinates -> Coordinates
 regularMoves vectors coordinates =
-    List.map (vectorToRegularMove coordinates) vectors
+    List.foldl reduceRegularMoves (Coordinates 0 0) (List.map (vectorToRegularMove coordinates) vectors)
+
+reduceRegularMoves : Coordinates -> Coordinates -> Coordinates
+reduceRegularMoves coordinatesA coordinatesB =
+    Coordinates (coordinatesA.x + coordinatesB.x) (coordinatesA.y + coordinatesB.y)
 
 vectorToRegularMove : Coordinates -> Vector -> Coordinates
 vectorToRegularMove coordinates vector = 
     case vector of
         Up ->            
-            { coordinates | y = coordinates.y + 1 }
+            ( Coordinates 0 1 )
         Down ->            
-            { coordinates | y = coordinates.y - 1 }
+            ( Coordinates 0 -1 )
         Right ->            
-            { coordinates | x = coordinates.x + 1 }
+            ( Coordinates 1 0 )
         Left ->            
-            { coordinates | x = coordinates.x - 1 }
+            ( Coordinates -1 0 )
+
+flatten : List (List a) -> List a
+flatten list = 
+    List.foldr (++) [] list

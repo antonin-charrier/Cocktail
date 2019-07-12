@@ -3,6 +3,7 @@ module Cocktail exposing (..)
 import Browser
 import Html exposing (Html, text, pre)
 import Http
+import Piece
 
 -- MAIN
 
@@ -61,7 +62,7 @@ view model =
       text "I was unable to load your book."
 
     Loading ->
-      text "Loading..."
+      text "Loading"
 
     Success fullText ->
-      pre [] [ text fullText ]
+      pre [] [ text (List.foldl (++) "" ( List.map Debug.toString (Piece.possibleRegularMoves Piece.White Piece.Pawn (Piece.Coordinates 1 3)))) ]
