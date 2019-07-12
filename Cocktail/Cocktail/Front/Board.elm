@@ -2,54 +2,81 @@ module Board exposing (..)
 
 import Browser
 import Debug
-import Html exposing (Html, button, div, table, text)
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import String
 import Tuple
-
-type alias Token =
-    { position : (Int, Int)
-    , tokenType : String
-    , color : String
-    }
+import Piece
 
 
 type alias Model =
-    { focusOn : (Int, Int)
-    , tokens : List Token
+    { focusOn : FocusOn
+    , pieces : List Piece.Piece
+    , possibleMoves : List (Int, Int)
     }
 
-type Case = Full Token
+type Case = Full Piece.Piece
     | Empty
+
+type FocusOn = FocusedPiece Piece.Piece
+    | NoPiece
 
 
 initialModel : Model
 initialModel =
-    { focusOn = (0,0), tokens = [{ position = (2,4), tokenType =  "Queen", color = "Black"},
-            { position = (5,1), tokenType =  "Tower", color = "White"}
-            ]
-        }
+    { focusOn = NoPiece, pieces = [
+            { coordinates = (1, 1), pieceType = Piece.Rook, color = Piece.White },
+            { coordinates = (2, 1), pieceType = Piece.Knight, color = Piece.White },
+            { coordinates = (3, 1), pieceType = Piece.Bishop, color = Piece.White },
+            { coordinates = (4, 1), pieceType = Piece.Queen, color = Piece.White },
+            { coordinates = (5, 1), pieceType = Piece.King, color = Piece.White },
+            { coordinates = (6, 1), pieceType = Piece.Bishop, color = Piece.White },
+            { coordinates = (7, 1), pieceType = Piece.Knight, color = Piece.White },
+            { coordinates = (8, 1), pieceType = Piece.Rook, color = Piece.White },
+            { coordinates = (1, 2), pieceType = Piece.Pawn, color = Piece.White },
+            { coordinates = (2, 2), pieceType = Piece.Pawn, color = Piece.White },
+            { coordinates = (3, 2), pieceType = Piece.Pawn, color = Piece.White },
+            { coordinates = (4, 2), pieceType = Piece.Pawn, color = Piece.White },
+            { coordinates = (5, 2), pieceType = Piece.Pawn, color = Piece.White },
+            { coordinates = (6, 2), pieceType = Piece.Pawn, color = Piece.White },
+            { coordinates = (7, 2), pieceType = Piece.Pawn, color = Piece.White },
+            { coordinates = (8, 2), pieceType = Piece.Pawn, color = Piece.White },
+            { coordinates = (1, 7), pieceType = Piece.Pawn, color = Piece.Black },
+            { coordinates = (2, 7), pieceType = Piece.Pawn, color = Piece.Black },
+            { coordinates = (3, 7), pieceType = Piece.Pawn, color = Piece.Black },
+            { coordinates = (4, 7), pieceType = Piece.Pawn, color = Piece.Black },
+            { coordinates = (5, 7), pieceType = Piece.Pawn, color = Piece.Black },
+            { coordinates = (6, 7), pieceType = Piece.Pawn, color = Piece.Black },
+            { coordinates = (7, 7), pieceType = Piece.Pawn, color = Piece.Black },
+            { coordinates = (8, 7), pieceType = Piece.Pawn, color = Piece.Black },
+            { coordinates = (1, 8), pieceType = Piece.Rook, color = Piece.Black },
+            { coordinates = (2, 8), pieceType = Piece.Knight, color = Piece.Black },
+            { coordinates = (3, 8), pieceType = Piece.Bishop, color = Piece.Black },
+            { coordinates = (4, 8), pieceType = Piece.Queen, color = Piece.Black },
+            { coordinates = (5, 8), pieceType = Piece.King, color = Piece.Black },
+            { coordinates = (6, 8), pieceType = Piece.Bishop, color = Piece.Black },
+            { coordinates = (7, 8), pieceType = Piece.Knight, color = Piece.Black },
+            { coordinates = (8, 8), pieceType = Piece.Rook, color = Piece.Black }
+        ], possibleMoves = []
+    }
 
 
 type Msg
-    = ClickOnCase (Int, Int)
+    = ClickOnCase Piece.Piece
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        ClickOnCase position ->
-            { focusOn = position, tokens = model.tokens }
+        ClickOnCase piece ->
+            { focusOn = piece, pieces = model.pieces, possibleMoves = (Piece.possibleRegularMoves piece) }
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ div [ class "board" ] (buildBoard model 8)
-        , div [] [ text (String.fromInt (Tuple.first model.focusOn) ++ ":" ++ String.fromInt (Tuple.second model.focusOn) ++ " ==> ")
-            , text (caseToString (findTokenFromPosition model.focusOn model.tokens))]
-        ]
+        [ div [ class "board" ] (buildBoard model 8) ]
 
 
 main : Program () Model Msg
@@ -88,25 +115,70 @@ buildCase = \model ->
     \posX ->
         \posY ->
             div [ class "case" ]
-                [ button [ onClick (ClickOnCase (posX, posY)) ]
-                    [ text (caseToString (findTokenFromPosition ( posX, posY ) model.tokens))
-                    ]
-                ]
+                (
+                    case (findCaseFromCoordinates (posX, posY) model.pieces) of
+                        Empty ->
+                            (
+                                case (List.member (posX, posY) model.possibleMoves) of
+                                    True ->
+                                        [ button [ onClick (ClickOnCase model.focusOn), disabled True ] [] ]
+                                    False -> 
+                                        [ button [ onClick (ClickOnCase model.focusOn), class "possible-move" ] [] ]                                    
+                            )
+                        Full caseWithImg -> 
+                            [ button [ onClick (ClickOnCase model.focusOn) ]
+                                [ img [ src ("src/" ++ (caseToImage caseWithImg)) ] [] ]
+                            ]                            
+                )
 
-findTokenFromPosition : (Int, Int) -> List Token -> Case
-findTokenFromPosition =
-    \pos -> \tokens ->
-        case (List.head (filterFromPosition pos tokens)) of
-            Just token  -> Full token
+findCaseFromCoordinates : (Int, Int) -> List Piece.Piece -> Case
+findCaseFromCoordinates =
+    \pos -> \pieces ->
+        case (List.head (filterFromCoordinates pos pieces)) of
+            Just piece -> Full piece
             _ -> Empty
 
 
-filterFromPosition = \pos -> \tokens ->
-    List.filter (\item -> ((Tuple.first item.position) == (Tuple.first pos) && (Tuple.second item.position) == (Tuple.second pos))) tokens
-
-caseToString : Case -> String
-caseToString = \c ->
-    case c of
-        Empty -> ""
-        Full token -> token.color ++ " " ++ token.tokenType
+filterFromCoordinates = \pos -> \pieces ->
+    List.filter (\item -> ((Tuple.first item.coordinates) == (Tuple.first pos) && (Tuple.second item.coordinates) == (Tuple.second pos))) pieces
+    
+caseToImage : Piece.Piece -> String
+caseToImage = \piece ->        
+    case piece.pieceType of
+        Piece.King ->
+            case piece.color of
+                Piece.White ->
+                    "icon.king.light.svg"
+                Piece.Black ->
+                    "icon.king.dark.svg"
+        Piece.Queen ->
+            case piece.color of
+                Piece.White ->
+                    "icon.queen.light.svg"
+                Piece.Black ->
+                    "icon.queen.dark.svg"
+        Piece.Bishop ->
+            case piece.color of
+                Piece.White ->
+                    "icon.bishop.light.svg"
+                Piece.Black ->
+                    "icon.bishop.dark.svg"
+        Piece.Knight ->
+            case piece.color of
+                Piece.White ->
+                    "icon.knight.light.svg"
+                Piece.Black ->
+                    "icon.knight.dark.svg"
+        Piece.Rook ->
+            case piece.color of
+                Piece.White ->
+                    "icon.rook.light.svg"
+                Piece.Black ->
+                    "icon.rook.dark.svg"
+        Piece.Pawn ->
+            case piece.color of
+                Piece.White ->
+                    "icon.pawn.light.svg"
+                Piece.Black ->
+                    "icon.pawn.dark.svg"
     

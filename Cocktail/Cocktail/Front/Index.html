@@ -4,6 +4,7 @@
   <style>
     .board {
       border: 1px solid black;
+      width: 800px;
     }
     .line {
       width: 100%;
@@ -26,6 +27,18 @@
       border: none;
       width: 100%;
       background-color: #F8DBAF;
+    }
+    .case button:focus {
+      outline: solid 3px green;
+      z-index: 100;
+    }
+    .case button.possible-move {
+      outline: solid 3px red;
+      z-index: 100;
+    }
+    .case img {
+      height: 80%;
+      width: 80%;
     }
     .line:nth-child(2n+1) .case:nth-child(2n+1) button {
       background-color: #C89742;
