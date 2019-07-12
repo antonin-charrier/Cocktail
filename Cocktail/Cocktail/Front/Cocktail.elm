@@ -2,9 +2,14 @@ module Cocktail exposing (..)
 
 import Set
 import Browser
-import Html exposing (Html, text, pre)
 import Http
 import Piece
+import Debug
+import Html exposing (Html, pre, button, div, table, text)
+import Html.Attributes exposing (class)
+import Html.Events exposing (onClick)
+import String
+import Tuple
 
 -- MAIN
 

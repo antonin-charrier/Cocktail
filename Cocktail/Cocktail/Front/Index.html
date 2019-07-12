@@ -1,15 +1,49 @@
-﻿<html>
+<html>
 <head>
-    <title>Cocktail</title>
+<title>Cocktail</title>
+  <style>
+    .board {
+      border: 1px solid black;
+    }
+    .line {
+      width: 100%;
+      display: flex;
+      flex-direction: row-reverse;
+    }
+    .case {
+      display: inline-block;
+      padding-top: 12.5%;
+      width: 12.5%;
+      position: relative;
+    }
+    .case button {
+      background-color: white;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border: none;
+      width: 100%;
+      background-color: #F8DBAF;
+    }
+    .line:nth-child(2n+1) .case:nth-child(2n+1) button {
+      background-color: #C89742;
+    }
+    .line:nth-child(2n) .case:nth-child(2n) button {
+      background-color: #C89742;
+    }
+    
+  </style>
 </head>
-<body>
-    <h1>
-        Cocktail
-    </h1>
-    <main></main>
-    <script src="Cocktail.js"></script>
-    <script>
-        var app = Elm.Cocktail.init({ node: document.querySelector('main') })
-    </script>
+<body>  
+	<h1>
+		Cocktail
+	</h1>
+	<main></main>	
+	<script src="Cocktail.js"></script>
+	<script>
+	  var app = Elm.Board.init({ node: document.querySelector('main') })
+	</script>
 </body>
 </html>
