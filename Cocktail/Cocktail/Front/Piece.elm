@@ -1,11 +1,11 @@
-module Piece exposing (Coordinates, Piece, Color, Vector, possibleRegularMoves)
+module Piece exposing (Coordinates, PieceType(..), Color(..), Vector(..), possibleRegularMoves)
 
 type alias Coordinates = 
     { x : Int
     , y : Int
     }
 
-type Piece
+type PieceType
     = King
     | Queen
     | Bishop
@@ -23,9 +23,9 @@ type Vector
     | Right
     | Left
 
-possibleRegularMoves : Color -> Piece -> Coordinates -> List Coordinates
-possibleRegularMoves color piece coordinates =
-    case piece of
+possibleRegularMoves : Color -> PieceType -> Coordinates -> List Coordinates
+possibleRegularMoves color pieceType coordinates =
+    case pieceType of
         King ->            
             flatten (
                 fullMoves (regularMoves [Up] coordinates) 1

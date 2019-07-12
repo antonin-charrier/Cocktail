@@ -5869,6 +5869,454 @@ var author$project$Cocktail$update = F2(
 			return _Utils_Tuple2(author$project$Cocktail$Failure, elm$core$Platform$Cmd$none);
 		}
 	});
+var author$project$Piece$Bishop = {$: 'Bishop'};
+var author$project$Piece$Coordinates = F2(
+	function (x, y) {
+		return {x: x, y: y};
+	});
+var author$project$Piece$White = {$: 'White'};
+var author$project$Piece$Down = {$: 'Down'};
+var author$project$Piece$Left = {$: 'Left'};
+var author$project$Piece$Right = {$: 'Right'};
+var author$project$Piece$Up = {$: 'Up'};
+var author$project$Piece$flatten = function (list) {
+	return A3(elm$core$List$foldr, elm$core$Basics$append, _List_Nil, list);
+};
+var author$project$Piece$regularMoveToMultipliedMove = F2(
+	function (multiplicator, coordinates) {
+		return A2(author$project$Piece$Coordinates, coordinates.x * multiplicator, coordinates.y * multiplicator);
+	});
+var elm$core$List$map = F2(
+	function (f, xs) {
+		return A3(
+			elm$core$List$foldr,
+			F2(
+				function (x, acc) {
+					return A2(
+						elm$core$List$cons,
+						f(x),
+						acc);
+				}),
+			_List_Nil,
+			xs);
+	});
+var author$project$Piece$regularMoveToFullMove = F2(
+	function (moves, multiplicator) {
+		return A2(
+			elm$core$List$map,
+			author$project$Piece$regularMoveToMultipliedMove(multiplicator),
+			moves);
+	});
+var author$project$Piece$fullMoves = F2(
+	function (moves, multiplicator) {
+		return A2(
+			elm$core$List$map,
+			author$project$Piece$regularMoveToFullMove(moves),
+			A2(elm$core$List$range, 1, multiplicator));
+	});
+var author$project$Piece$vectorToRegularMove = F2(
+	function (coordinates, vector) {
+		switch (vector.$) {
+			case 'Up':
+				return _Utils_update(
+					coordinates,
+					{y: coordinates.y + 1});
+			case 'Down':
+				return _Utils_update(
+					coordinates,
+					{y: coordinates.y - 1});
+			case 'Right':
+				return _Utils_update(
+					coordinates,
+					{x: coordinates.x + 1});
+			default:
+				return _Utils_update(
+					coordinates,
+					{x: coordinates.x - 1});
+		}
+	});
+var author$project$Piece$regularMoves = F2(
+	function (vectors, coordinates) {
+		return A2(
+			elm$core$List$map,
+			author$project$Piece$vectorToRegularMove(coordinates),
+			vectors);
+	});
+var author$project$Piece$possibleRegularMoves = F3(
+	function (color, pieceType, coordinates) {
+		switch (pieceType.$) {
+			case 'King':
+				return author$project$Piece$flatten(
+					_Utils_ap(
+						A2(
+							author$project$Piece$fullMoves,
+							A2(
+								author$project$Piece$regularMoves,
+								_List_fromArray(
+									[author$project$Piece$Up]),
+								coordinates),
+							1),
+						_Utils_ap(
+							A2(
+								author$project$Piece$fullMoves,
+								A2(
+									author$project$Piece$regularMoves,
+									_List_fromArray(
+										[author$project$Piece$Down]),
+									coordinates),
+								1),
+							_Utils_ap(
+								A2(
+									author$project$Piece$fullMoves,
+									A2(
+										author$project$Piece$regularMoves,
+										_List_fromArray(
+											[author$project$Piece$Right]),
+										coordinates),
+									1),
+								_Utils_ap(
+									A2(
+										author$project$Piece$fullMoves,
+										A2(
+											author$project$Piece$regularMoves,
+											_List_fromArray(
+												[author$project$Piece$Left]),
+											coordinates),
+										1),
+									_Utils_ap(
+										A2(
+											author$project$Piece$fullMoves,
+											A2(
+												author$project$Piece$regularMoves,
+												_List_fromArray(
+													[author$project$Piece$Up, author$project$Piece$Right]),
+												coordinates),
+											1),
+										_Utils_ap(
+											A2(
+												author$project$Piece$fullMoves,
+												A2(
+													author$project$Piece$regularMoves,
+													_List_fromArray(
+														[author$project$Piece$Up, author$project$Piece$Right]),
+													coordinates),
+												1),
+											_Utils_ap(
+												A2(
+													author$project$Piece$fullMoves,
+													A2(
+														author$project$Piece$regularMoves,
+														_List_fromArray(
+															[author$project$Piece$Down, author$project$Piece$Right]),
+														coordinates),
+													1),
+												A2(
+													author$project$Piece$fullMoves,
+													A2(
+														author$project$Piece$regularMoves,
+														_List_fromArray(
+															[author$project$Piece$Down, author$project$Piece$Left]),
+														coordinates),
+													1)))))))));
+			case 'Queen':
+				return author$project$Piece$flatten(
+					_Utils_ap(
+						A2(
+							author$project$Piece$fullMoves,
+							A2(
+								author$project$Piece$regularMoves,
+								_List_fromArray(
+									[author$project$Piece$Up]),
+								coordinates),
+							8),
+						_Utils_ap(
+							A2(
+								author$project$Piece$fullMoves,
+								A2(
+									author$project$Piece$regularMoves,
+									_List_fromArray(
+										[author$project$Piece$Down]),
+									coordinates),
+								8),
+							_Utils_ap(
+								A2(
+									author$project$Piece$fullMoves,
+									A2(
+										author$project$Piece$regularMoves,
+										_List_fromArray(
+											[author$project$Piece$Right]),
+										coordinates),
+									8),
+								_Utils_ap(
+									A2(
+										author$project$Piece$fullMoves,
+										A2(
+											author$project$Piece$regularMoves,
+											_List_fromArray(
+												[author$project$Piece$Left]),
+											coordinates),
+										8),
+									_Utils_ap(
+										A2(
+											author$project$Piece$fullMoves,
+											A2(
+												author$project$Piece$regularMoves,
+												_List_fromArray(
+													[author$project$Piece$Up, author$project$Piece$Right]),
+												coordinates),
+											8),
+										_Utils_ap(
+											A2(
+												author$project$Piece$fullMoves,
+												A2(
+													author$project$Piece$regularMoves,
+													_List_fromArray(
+														[author$project$Piece$Up, author$project$Piece$Right]),
+													coordinates),
+												8),
+											_Utils_ap(
+												A2(
+													author$project$Piece$fullMoves,
+													A2(
+														author$project$Piece$regularMoves,
+														_List_fromArray(
+															[author$project$Piece$Down, author$project$Piece$Right]),
+														coordinates),
+													8),
+												A2(
+													author$project$Piece$fullMoves,
+													A2(
+														author$project$Piece$regularMoves,
+														_List_fromArray(
+															[author$project$Piece$Down, author$project$Piece$Left]),
+														coordinates),
+													8)))))))));
+			case 'Bishop':
+				return author$project$Piece$flatten(
+					_Utils_ap(
+						A2(
+							author$project$Piece$fullMoves,
+							A2(
+								author$project$Piece$regularMoves,
+								_List_fromArray(
+									[author$project$Piece$Up, author$project$Piece$Right]),
+								coordinates),
+							8),
+						_Utils_ap(
+							A2(
+								author$project$Piece$fullMoves,
+								A2(
+									author$project$Piece$regularMoves,
+									_List_fromArray(
+										[author$project$Piece$Up, author$project$Piece$Left]),
+									coordinates),
+								8),
+							_Utils_ap(
+								A2(
+									author$project$Piece$fullMoves,
+									A2(
+										author$project$Piece$regularMoves,
+										_List_fromArray(
+											[author$project$Piece$Down, author$project$Piece$Right]),
+										coordinates),
+									8),
+								A2(
+									author$project$Piece$fullMoves,
+									A2(
+										author$project$Piece$regularMoves,
+										_List_fromArray(
+											[author$project$Piece$Down, author$project$Piece$Left]),
+										coordinates),
+									8)))));
+			case 'Knight':
+				return author$project$Piece$flatten(
+					_Utils_ap(
+						A2(
+							author$project$Piece$fullMoves,
+							A2(
+								author$project$Piece$regularMoves,
+								_List_fromArray(
+									[author$project$Piece$Up, author$project$Piece$Up, author$project$Piece$Right]),
+								coordinates),
+							1),
+						_Utils_ap(
+							A2(
+								author$project$Piece$fullMoves,
+								A2(
+									author$project$Piece$regularMoves,
+									_List_fromArray(
+										[author$project$Piece$Up, author$project$Piece$Up, author$project$Piece$Left]),
+									coordinates),
+								1),
+							_Utils_ap(
+								A2(
+									author$project$Piece$fullMoves,
+									A2(
+										author$project$Piece$regularMoves,
+										_List_fromArray(
+											[author$project$Piece$Down, author$project$Piece$Down, author$project$Piece$Right]),
+										coordinates),
+									1),
+								_Utils_ap(
+									A2(
+										author$project$Piece$fullMoves,
+										A2(
+											author$project$Piece$regularMoves,
+											_List_fromArray(
+												[author$project$Piece$Down, author$project$Piece$Down, author$project$Piece$Left]),
+											coordinates),
+										1),
+									_Utils_ap(
+										A2(
+											author$project$Piece$fullMoves,
+											A2(
+												author$project$Piece$regularMoves,
+												_List_fromArray(
+													[author$project$Piece$Right, author$project$Piece$Right, author$project$Piece$Up]),
+												coordinates),
+											1),
+										_Utils_ap(
+											A2(
+												author$project$Piece$fullMoves,
+												A2(
+													author$project$Piece$regularMoves,
+													_List_fromArray(
+														[author$project$Piece$Right, author$project$Piece$Right, author$project$Piece$Down]),
+													coordinates),
+												1),
+											_Utils_ap(
+												A2(
+													author$project$Piece$fullMoves,
+													A2(
+														author$project$Piece$regularMoves,
+														_List_fromArray(
+															[author$project$Piece$Left, author$project$Piece$Left, author$project$Piece$Up]),
+														coordinates),
+													1),
+												A2(
+													author$project$Piece$fullMoves,
+													A2(
+														author$project$Piece$regularMoves,
+														_List_fromArray(
+															[author$project$Piece$Left, author$project$Piece$Left, author$project$Piece$Down]),
+														coordinates),
+													1)))))))));
+			case 'Rook':
+				return author$project$Piece$flatten(
+					_Utils_ap(
+						A2(
+							author$project$Piece$fullMoves,
+							A2(
+								author$project$Piece$regularMoves,
+								_List_fromArray(
+									[author$project$Piece$Up]),
+								coordinates),
+							8),
+						_Utils_ap(
+							A2(
+								author$project$Piece$fullMoves,
+								A2(
+									author$project$Piece$regularMoves,
+									_List_fromArray(
+										[author$project$Piece$Down]),
+									coordinates),
+								8),
+							_Utils_ap(
+								A2(
+									author$project$Piece$fullMoves,
+									A2(
+										author$project$Piece$regularMoves,
+										_List_fromArray(
+											[author$project$Piece$Right]),
+										coordinates),
+									8),
+								A2(
+									author$project$Piece$fullMoves,
+									A2(
+										author$project$Piece$regularMoves,
+										_List_fromArray(
+											[author$project$Piece$Left]),
+										coordinates),
+									8)))));
+			default:
+				if (color.$ === 'White') {
+					return author$project$Piece$flatten(
+						_Utils_ap(
+							A2(
+								author$project$Piece$fullMoves,
+								A2(
+									author$project$Piece$regularMoves,
+									_List_fromArray(
+										[author$project$Piece$Up]),
+									coordinates),
+								1),
+							_Utils_ap(
+								A2(
+									author$project$Piece$fullMoves,
+									A2(
+										author$project$Piece$regularMoves,
+										_List_fromArray(
+											[author$project$Piece$Up]),
+										coordinates),
+									2),
+								_Utils_ap(
+									A2(
+										author$project$Piece$fullMoves,
+										A2(
+											author$project$Piece$regularMoves,
+											_List_fromArray(
+												[author$project$Piece$Up, author$project$Piece$Right]),
+											coordinates),
+										1),
+									A2(
+										author$project$Piece$fullMoves,
+										A2(
+											author$project$Piece$regularMoves,
+											_List_fromArray(
+												[author$project$Piece$Up, author$project$Piece$Left]),
+											coordinates),
+										1)))));
+				} else {
+					return author$project$Piece$flatten(
+						_Utils_ap(
+							A2(
+								author$project$Piece$fullMoves,
+								A2(
+									author$project$Piece$regularMoves,
+									_List_fromArray(
+										[author$project$Piece$Down]),
+									coordinates),
+								1),
+							_Utils_ap(
+								A2(
+									author$project$Piece$fullMoves,
+									A2(
+										author$project$Piece$regularMoves,
+										_List_fromArray(
+											[author$project$Piece$Down]),
+										coordinates),
+									2),
+								_Utils_ap(
+									A2(
+										author$project$Piece$fullMoves,
+										A2(
+											author$project$Piece$regularMoves,
+											_List_fromArray(
+												[author$project$Piece$Down, author$project$Piece$Right]),
+											coordinates),
+										1),
+									A2(
+										author$project$Piece$fullMoves,
+										A2(
+											author$project$Piece$regularMoves,
+											_List_fromArray(
+												[author$project$Piece$Down, author$project$Piece$Left]),
+											coordinates),
+										1)))));
+				}
+		}
+	});
+var elm$core$Debug$toString = _Debug_toString;
 var elm$json$Json$Decode$map = _Json_map1;
 var elm$json$Json$Decode$map2 = _Json_map2;
 var elm$json$Json$Decode$succeed = _Json_succeed;
@@ -5892,7 +6340,7 @@ var author$project$Cocktail$view = function (model) {
 		case 'Failure':
 			return elm$html$Html$text('I was unable to load your book.');
 		case 'Loading':
-			return elm$html$Html$text('Loading...');
+			return elm$html$Html$text('Loading');
 		default:
 			var fullText = model.a;
 			return A2(
@@ -5900,7 +6348,19 @@ var author$project$Cocktail$view = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						elm$html$Html$text(fullText)
+						elm$html$Html$text(
+						A3(
+							elm$core$List$foldl,
+							elm$core$Basics$append,
+							'',
+							A2(
+								elm$core$List$map,
+								elm$core$Debug$toString,
+								A3(
+									author$project$Piece$possibleRegularMoves,
+									author$project$Piece$White,
+									author$project$Piece$Bishop,
+									A2(author$project$Piece$Coordinates, 1, 3)))))
 					]));
 	}
 };
@@ -5926,20 +6386,6 @@ var elm$core$Task$Perform = function (a) {
 	return {$: 'Perform', a: a};
 };
 var elm$core$Task$init = elm$core$Task$succeed(_Utils_Tuple0);
-var elm$core$List$map = F2(
-	function (f, xs) {
-		return A3(
-			elm$core$List$foldr,
-			F2(
-				function (x, acc) {
-					return A2(
-						elm$core$List$cons,
-						f(x),
-						acc);
-				}),
-			_List_Nil,
-			xs);
-	});
 var elm$core$Task$map = F2(
 	function (func, taskA) {
 		return A2(
