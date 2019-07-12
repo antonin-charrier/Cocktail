@@ -1,11 +1,6 @@
-module Piece exposing (Coordinates, PieceType(..), Color(..), Vector(..), possibleRegularMoves)
+module Piece exposing (PieceType(..), Color(..), Vector(..), possibleRegularMoves)
 
-import List.Unique
-
-type alias Coordinates = 
-    { x : Int
-    , y : Int
-    }
+import Set
 
 type PieceType
     = King
@@ -25,86 +20,88 @@ type Vector
     | Right
     | Left
 
-possibleRegularMoves : Color -> PieceType -> Coordinates -> List Coordinates
+possibleRegularMoves : Color -> PieceType -> (Int, Int) -> Set.Set (Int, Int)
 possibleRegularMoves color pieceType coordinates =
-    case pieceType of
-        King ->            
-            fullMoves (regularMoves [Up] coordinates) 1
-            ++ fullMoves (regularMoves [Down] coordinates) 1
-            ++ fullMoves (regularMoves [Right] coordinates) 1
-            ++ fullMoves (regularMoves [Left] coordinates) 1
-            ++ fullMoves (regularMoves [Up, Right] coordinates) 1
-            ++ fullMoves (regularMoves [Up, Right] coordinates) 1
-            ++ fullMoves (regularMoves [Down, Right] coordinates) 1
-            ++ fullMoves (regularMoves [Down, Left] coordinates) 1
-        Queen ->            
-            fullMoves (regularMoves [Up] coordinates) 8
-            ++ fullMoves (regularMoves [Down] coordinates) 8
-            ++ fullMoves (regularMoves [Right] coordinates) 8
-            ++ fullMoves (regularMoves [Left] coordinates) 8
-            ++ fullMoves (regularMoves [Up, Right] coordinates) 8
-            ++ fullMoves (regularMoves [Up, Right] coordinates) 8
-            ++ fullMoves (regularMoves [Down, Right] coordinates) 8
-            ++ fullMoves (regularMoves [Down, Left] coordinates) 8
-        Bishop ->            
-            fullMoves (regularMoves [Up, Right] coordinates) 8
-            ++ fullMoves (regularMoves [Up, Left] coordinates) 8
-            ++ fullMoves (regularMoves [Down, Right] coordinates) 8
-            ++ fullMoves (regularMoves [Down, Left] coordinates) 8
-        Knight ->            
-            fullMoves (regularMoves [Up, Up, Right] coordinates) 1
-            ++ fullMoves (regularMoves [Up, Up, Left] coordinates) 1
-            ++ fullMoves (regularMoves [Down, Down, Right] coordinates) 1
-            ++ fullMoves (regularMoves [Down, Down, Left] coordinates) 1
-            ++ fullMoves (regularMoves [Right, Right, Up] coordinates) 1
-            ++ fullMoves (regularMoves [Right, Right, Down] coordinates) 1
-            ++ fullMoves (regularMoves [Left, Left, Up] coordinates) 1
-            ++ fullMoves (regularMoves [Left, Left, Down] coordinates) 1
-        Rook ->        
-            fullMoves (regularMoves [Up] coordinates) 8
-            ++ fullMoves (regularMoves [Down] coordinates) 8
-            ++ fullMoves (regularMoves [Right] coordinates) 8
-            ++ fullMoves (regularMoves [Left] coordinates) 8
-        Pawn ->
-            case color of
-                White ->
-                    fullMoves (regularMoves [Up] coordinates) 1
-                    ++ fullMoves (regularMoves [Up] coordinates) 2
-                    ++ fullMoves (regularMoves [Up, Right] coordinates) 1
-                    ++ fullMoves (regularMoves [Up, Left] coordinates) 1
-                Black ->
-                    fullMoves (regularMoves [Down] coordinates) 1
-                    ++ fullMoves (regularMoves [Down] coordinates) 2
-                    ++ fullMoves (regularMoves [Down, Right] coordinates) 1
-                    ++ fullMoves (regularMoves [Down, Left] coordinates) 1
+    Set.fromList (
+        case pieceType of
+            King ->            
+                fullMoves (regularMoves [Up] coordinates) 1
+                ++ fullMoves (regularMoves [Down] coordinates) 1
+                ++ fullMoves (regularMoves [Right] coordinates) 1
+                ++ fullMoves (regularMoves [Left] coordinates) 1
+                ++ fullMoves (regularMoves [Up, Right] coordinates) 1
+                ++ fullMoves (regularMoves [Up, Right] coordinates) 1
+                ++ fullMoves (regularMoves [Down, Right] coordinates) 1
+                ++ fullMoves (regularMoves [Down, Left] coordinates) 1
+            Queen ->            
+                fullMoves (regularMoves [Up] coordinates) 8
+                ++ fullMoves (regularMoves [Down] coordinates) 8
+                ++ fullMoves (regularMoves [Right] coordinates) 8
+                ++ fullMoves (regularMoves [Left] coordinates) 8
+                ++ fullMoves (regularMoves [Up, Right] coordinates) 8
+                ++ fullMoves (regularMoves [Up, Right] coordinates) 8
+                ++ fullMoves (regularMoves [Down, Right] coordinates) 8
+                ++ fullMoves (regularMoves [Down, Left] coordinates) 8
+            Bishop ->            
+                fullMoves (regularMoves [Up, Right] coordinates) 8
+                ++ fullMoves (regularMoves [Up, Left] coordinates) 8
+                ++ fullMoves (regularMoves [Down, Right] coordinates) 8
+                ++ fullMoves (regularMoves [Down, Left] coordinates) 8
+            Knight ->            
+                fullMoves (regularMoves [Up, Up, Right] coordinates) 1
+                ++ fullMoves (regularMoves [Up, Up, Left] coordinates) 1
+                ++ fullMoves (regularMoves [Down, Down, Right] coordinates) 1
+                ++ fullMoves (regularMoves [Down, Down, Left] coordinates) 1
+                ++ fullMoves (regularMoves [Right, Right, Up] coordinates) 1
+                ++ fullMoves (regularMoves [Right, Right, Down] coordinates) 1
+                ++ fullMoves (regularMoves [Left, Left, Up] coordinates) 1
+                ++ fullMoves (regularMoves [Left, Left, Down] coordinates) 1
+            Rook ->        
+                fullMoves (regularMoves [Up] coordinates) 8
+                ++ fullMoves (regularMoves [Down] coordinates) 8
+                ++ fullMoves (regularMoves [Right] coordinates) 8
+                ++ fullMoves (regularMoves [Left] coordinates) 8
+            Pawn ->
+                case color of
+                    White ->
+                        fullMoves (regularMoves [Up] coordinates) 1
+                        ++ fullMoves (regularMoves [Up] coordinates) 2
+                        ++ fullMoves (regularMoves [Up, Right] coordinates) 1
+                        ++ fullMoves (regularMoves [Up, Left] coordinates) 1
+                    Black ->
+                        fullMoves (regularMoves [Down] coordinates) 1
+                        ++ fullMoves (regularMoves [Down] coordinates) 2
+                        ++ fullMoves (regularMoves [Down, Right] coordinates) 1
+                        ++ fullMoves (regularMoves [Down, Left] coordinates) 1
+    )
 
-fullMoves : Coordinates -> Int -> List Coordinates
+fullMoves : (Int, Int) -> Int -> List (Int, Int)
 fullMoves moves multiplicator = 
-    List.Unique.filterDuplicates (List.map (regularMoveToFullMove moves) (List.range 1 multiplicator))
+   List.map ( regularMoveToFullMove moves ) ( List.range 1 multiplicator )
 
-regularMoveToFullMove : Coordinates -> Int -> Coordinates
+regularMoveToFullMove : (Int, Int) -> Int -> (Int, Int)
 regularMoveToFullMove coordinates multiplicator =
-    Coordinates ( coordinates.x * (multiplicator - 1) + coordinates.x ) ( coordinates.y * (multiplicator - 1) + coordinates.y)
+    ( ( Tuple.first coordinates ) * ( multiplicator - 1 ) + ( Tuple.first coordinates ), ( Tuple.second coordinates ) * ( multiplicator - 1 ) + ( Tuple.second coordinates ) )
 
-regularMoves : List Vector -> Coordinates -> Coordinates
+regularMoves : List Vector -> (Int, Int) -> (Int, Int)
 regularMoves vectors coordinates =
-    List.foldl reduceRegularMoves (Coordinates 0 0) (List.map (vectorToRegularMove coordinates) vectors)
+    List.foldl reduceRegularMoves (0, 0) (List.map (vectorToRegularMove coordinates) vectors)
 
-reduceRegularMoves : Coordinates -> Coordinates -> Coordinates
+reduceRegularMoves : (Int, Int) -> (Int, Int) -> (Int, Int)
 reduceRegularMoves coordinatesA coordinatesB =
-    Coordinates (coordinatesA.x + coordinatesB.x) (coordinatesA.y + coordinatesB.y)
+    ( ( Tuple.first coordinatesA ) + ( Tuple.first coordinatesB ), ( Tuple.second coordinatesA ) + ( Tuple.second coordinatesB ) )
 
-vectorToRegularMove : Coordinates -> Vector -> Coordinates
+vectorToRegularMove : (Int, Int) -> Vector -> (Int, Int)
 vectorToRegularMove coordinates vector = 
     case vector of
         Up ->            
-            ( Coordinates 0 1 )
+            ( 0, 1 )
         Down ->            
-            ( Coordinates 0 -1 )
+            ( 0, -1 )
         Right ->            
-            ( Coordinates 1 0 )
+            ( 1, 0 )
         Left ->            
-            ( Coordinates -1 0 )
+            ( -1, 0 )
 
 flatten : List (List a) -> List a
 flatten list = 
