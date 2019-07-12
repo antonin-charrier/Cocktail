@@ -65,4 +65,4 @@ view model =
       text "Loading"
 
     Success fullText ->
-      pre [] [ text (List.foldl (++) "" ( List.map Debug.toString (Piece.possibleRegularMoves Piece.White Piece.Bishop (Piece.Coordinates 1 3)))) ]
+      pre [] [ text (List.foldl (++) "" ( List.map Debug.toString (Piece.possibleRegularMoves Piece.White Piece.Pawn (Piece.Coordinates 1 3)))) ]
