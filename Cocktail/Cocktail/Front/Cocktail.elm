@@ -1,9 +1,9 @@
 module Cocktail exposing (..)
 
 import Browser
-import Html exposing (Html, text, pre)
+import Html exposing (Html, button, div, text, pre)
+import Html.Events exposing (onClick)
 import Http
-import Piece
 
 -- MAIN
 
@@ -17,24 +17,27 @@ main =
 
 -- MODEL
 
+type alias Coordonate = { x : Int, y : Int }
+type alias Move = { from : Coordonate, to : Coordonate }
+
 type Model
   = Failure
   | Loading
   | Success String
+  | Nothing
 
 init : () -> (Model, Cmd Msg)
 init _ =
-  ( Loading
-  , Http.get
-      { url = "http://localhost:8080/test/"
-      , expect = Http.expectString GotText
-      }
+  ( Nothing
+  , Cmd.none
   )
 
 -- UPDATE
 
 type Msg
   = GotText (Result Http.Error String)
+  | OnMove Move
+  
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -46,6 +49,7 @@ update msg model =
 
         Err _ ->
           (Failure, Cmd.none)
+    OnMove move -> onMove move
 
 -- SUBSCRIPTIONS
 
@@ -57,12 +61,22 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-  case model of
-    Failure ->
-      text "I was unable to load your book."
+    div [] [button [ onClick (OnMove {from = { x = 0, y = 0}, to = { x = 1, y = 1}})] [ text "test"]]
 
-    Loading ->
-      text "Loading..."
+  -- FUNCTIONS
 
-    Success fullText ->
-      pre [] [ text fullText ]
+onMove move =
+    ( Loading
+    , Http.post
+      { url = "http://localhost:8080/move"
+      , body = (Http.stringBody "applicaion/json" (createJsonFromMove move))
+      , expect = Http.expectString GotText
+      }
+    )
+
+createJsonFromMove : Move -> String
+createJsonFromMove move =
+    "{\"from\":[" ++ (String.fromInt move.from.x)  ++ "," ++ (String.fromInt move.from.y) ++ "],"
+    ++ "\"to\":[" ++ (String.fromInt move.to.x)  ++ "," ++ (String.fromInt move.to.y) ++ "]}"
+    
+    
