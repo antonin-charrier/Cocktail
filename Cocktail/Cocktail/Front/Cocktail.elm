@@ -3,6 +3,7 @@ module Cocktail exposing (..)
 import Browser
 import Html exposing (Html, text, pre)
 import Http
+import Piece
 
 -- MAIN
 
