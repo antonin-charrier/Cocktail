@@ -4797,18 +4797,54 @@ var author$project$Piece$filterPawnMoves = F3(
 					function (otherPiece) {
 						return (!_Utils_eq(piece.pieceType, author$project$Piece$Pawn)) || ((!_Utils_eq(otherPiece.coordinates, coordinates)) && (_Utils_eq(
 							coordinates,
-							_Utils_Tuple2(piece.coordinates.a, piece.coordinates.b + 1)) || _Utils_eq(
+							_Utils_Tuple2(
+								piece.coordinates.a,
+								function () {
+									var _n0 = piece.color;
+									if (_n0.$ === 'Black') {
+										return piece.coordinates.b - 1;
+									} else {
+										return piece.coordinates.b + 1;
+									}
+								}())) || _Utils_eq(
 							coordinates,
-							_Utils_Tuple2(piece.coordinates.a, piece.coordinates.b + 2))));
+							_Utils_Tuple2(
+								piece.coordinates.a,
+								function () {
+									var _n1 = piece.color;
+									if (_n1.$ === 'Black') {
+										return piece.coordinates.b - 2;
+									} else {
+										return piece.coordinates.b + 2;
+									}
+								}()))));
 					},
 					pieces) || A2(
 					elm$core$List$any,
 					function (otherPiece) {
 						return (!_Utils_eq(otherPiece.color, piece.color)) && (_Utils_eq(otherPiece.coordinates, coordinates) && (_Utils_eq(
 							coordinates,
-							_Utils_Tuple2(piece.coordinates.a - 1, piece.coordinates.b + 1)) || _Utils_eq(
+							_Utils_Tuple2(
+								piece.coordinates.a - 1,
+								function () {
+									var _n2 = piece.color;
+									if (_n2.$ === 'Black') {
+										return piece.coordinates.b - 1;
+									} else {
+										return piece.coordinates.b + 1;
+									}
+								}())) || _Utils_eq(
 							coordinates,
-							_Utils_Tuple2(piece.coordinates.a + 1, piece.coordinates.b + 1))));
+							_Utils_Tuple2(
+								piece.coordinates.a + 1,
+								function () {
+									var _n3 = piece.color;
+									if (_n3.$ === 'Black') {
+										return piece.coordinates.b - 1;
+									} else {
+										return piece.coordinates.b + 1;
+									}
+								}()))));
 					},
 					pieces);
 			},

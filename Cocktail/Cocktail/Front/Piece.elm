@@ -48,16 +48,36 @@ filterPawnMoves moves piece pieces =
             ( piece.pieceType /= Pawn )
             || ( otherPiece.coordinates /= coordinates &&
                 (
-                    coordinates == ( ( Tuple.first piece.coordinates ), ( Tuple.second piece.coordinates + 1 ) ) 
-                    || coordinates == ( ( Tuple.first piece.coordinates ), ( Tuple.second piece.coordinates + 2 ) )
+                    coordinates == ( ( Tuple.first piece.coordinates ), ( 
+                        case piece.color of
+                            Black ->Tuple.second piece.coordinates - 1
+                            White -> Tuple.second piece.coordinates + 1
+                        )
+                    ) 
+                    || coordinates == ( ( Tuple.first piece.coordinates ), (
+                        case piece.color of
+                            Black ->Tuple.second piece.coordinates - 2
+                            White -> Tuple.second piece.coordinates + 2
+                        )
+                    )
                 )
             )
         ) pieces ) 
         || ( List.any (\otherPiece ->
             otherPiece.color /= piece.color && otherPiece.coordinates == coordinates &&
             (
-                coordinates == ( ( Tuple.first piece.coordinates - 1 ), ( Tuple.second piece.coordinates + 1 ) )
-                || coordinates == ( ( Tuple.first piece.coordinates + 1 ), ( Tuple.second piece.coordinates + 1 ) )
+                coordinates == ( ( Tuple.first piece.coordinates - 1 ),  ( 
+                    case piece.color of
+                        Black ->Tuple.second piece.coordinates - 1
+                        White -> Tuple.second piece.coordinates + 1
+                    )
+                )
+                || coordinates == ( ( Tuple.first piece.coordinates + 1 ),  ( 
+                    case piece.color of
+                        Black ->Tuple.second piece.coordinates - 1
+                        White -> Tuple.second piece.coordinates + 1
+                    )
+                )
             )
         ) pieces )
     ) moves
