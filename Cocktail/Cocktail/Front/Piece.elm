@@ -36,7 +36,7 @@ possibleRegularMoves piece =
                 ++ fullMoves (regularMoves [Right] piece.coordinates) 1 piece.coordinates
                 ++ fullMoves (regularMoves [Left] piece.coordinates) 1 piece.coordinates
                 ++ fullMoves (regularMoves [Up, Right] piece.coordinates) 1 piece.coordinates
-                ++ fullMoves (regularMoves [Up, Right] piece.coordinates) 1 piece.coordinates
+                ++ fullMoves (regularMoves [Up, Left] piece.coordinates) 1 piece.coordinates
                 ++ fullMoves (regularMoves [Down, Right] piece.coordinates) 1 piece.coordinates
                 ++ fullMoves (regularMoves [Down, Left] piece.coordinates) 1 piece.coordinates
             Queen ->            
@@ -45,7 +45,7 @@ possibleRegularMoves piece =
                 ++ fullMoves (regularMoves [Right] piece.coordinates) 8 piece.coordinates
                 ++ fullMoves (regularMoves [Left] piece.coordinates) 8 piece.coordinates
                 ++ fullMoves (regularMoves [Up, Right] piece.coordinates) 8 piece.coordinates
-                ++ fullMoves (regularMoves [Up, Right] piece.coordinates) 8 piece.coordinates
+                ++ fullMoves (regularMoves [Up, Left] piece.coordinates) 8 piece.coordinates
                 ++ fullMoves (regularMoves [Down, Right] piece.coordinates) 8 piece.coordinates
                 ++ fullMoves (regularMoves [Down, Left] piece.coordinates) 8 piece.coordinates
             Bishop ->            

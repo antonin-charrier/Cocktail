@@ -8,6 +8,7 @@ import Html.Events exposing (..)
 import String
 import Tuple
 import Piece
+import Set
 
 
 type alias Model =
@@ -20,12 +21,12 @@ type Case = Full Piece.Piece
     | Empty
 
 type FocusOn = FocusedPiece Piece.Piece
-    | NoPiece
+    | NoPiece (Int, Int)
 
 
 initialModel : Model
 initialModel =
-    { focusOn = NoPiece, pieces = [
+    { focusOn = NoPiece ( 0, 0 ), pieces = [
             { coordinates = (1, 1), pieceType = Piece.Rook, color = Piece.White },
             { coordinates = (2, 1), pieceType = Piece.Knight, color = Piece.White },
             { coordinates = (3, 1), pieceType = Piece.Bishop, color = Piece.White },
@@ -63,15 +64,28 @@ initialModel =
 
 
 type Msg
-    = ClickOnCase Piece.Piece
+    = ClickOnCase FocusOn
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        ClickOnCase piece ->
-            { focusOn = piece, pieces = model.pieces, possibleMoves = (Piece.possibleRegularMoves piece) }
+        ClickOnCase focusOn ->
+           case focusOn of
+                FocusedPiece piece ->
+                    { focusOn = focusOn, pieces = model.pieces, possibleMoves = Set.toList (Piece.possibleRegularMoves piece) }
+                NoPiece coordinates -> 
+                    ( 
+                        case model.focusOn of
+                            FocusedPiece piece ->
+                                { focusOn = NoPiece ( 0, 0 ), pieces = ( updatePieces model.pieces piece coordinates ), possibleMoves = [] }
+                            NoPiece _ -> 
+                                { focusOn = NoPiece ( 0, 0 ), pieces = model.pieces, possibleMoves = [] }
+                    )
 
+updatePieces : List Piece.Piece -> Piece.Piece -> (Int, Int) -> List Piece.Piece
+updatePieces pieces currentPiece newCoordinates = 
+    { currentPiece | coordinates = newCoordinates } :: List.filter ( \piece -> piece.coordinates /= currentPiece.coordinates ) pieces
 
 view : Model -> Html Msg
 view model =
@@ -87,49 +101,43 @@ main =
         , update = update
         }
 
+buildBoard : Model -> Int -> List (Html Msg)
+buildBoard model max =
+    if max > 0 then
+        List.append
+            [ div [ class "line" ] (buildLine model max 8)
+            ]
+            (buildBoard model (max - 1))
 
-buildBoard =
-    \model ->
-        \max ->
-            if max > 0 then
-                List.append
-                    [ div [ class "line" ] (buildLine model max 8)
-                    ]
-                    (buildBoard model (max - 1))
+    else
+        []
 
-            else
-                []
+buildLine : Model -> Int -> Int -> List (Html Msg)
+buildLine model id max =
+    if max > 0 then
+        List.append [ buildCase model max id ] (buildLine model id (max - 1))
 
+    else
+        []
 
-buildLine = \model ->
-    \id ->
-        \max ->
-            if max > 0 then
-                List.append [ buildCase model max id ] (buildLine model id (max - 1))
-
-            else
-                []
-
-
-buildCase = \model ->
-    \posX ->
-        \posY ->
-            div [ class "case" ]
-                (
-                    case (findCaseFromCoordinates (posX, posY) model.pieces) of
-                        Empty ->
-                            (
-                                case (List.member (posX, posY) model.possibleMoves) of
-                                    True ->
-                                        [ button [ onClick (ClickOnCase model.focusOn), disabled True ] [] ]
-                                    False -> 
-                                        [ button [ onClick (ClickOnCase model.focusOn), class "possible-move" ] [] ]                                    
-                            )
-                        Full caseWithImg -> 
-                            [ button [ onClick (ClickOnCase model.focusOn) ]
-                                [ img [ src ("src/" ++ (caseToImage caseWithImg)) ] [] ]
-                            ]                            
-                )
+buildCase : Model -> Int -> Int -> Html Msg
+buildCase model posX posY =
+    div [ class "case" ]
+        (
+            case (findCaseFromCoordinates (posX, posY) model.pieces) of
+                Empty ->
+                    (
+                        case (List.member (posX, posY) model.possibleMoves) of
+                            False ->
+                                [ button [ onClick (ClickOnCase ( NoPiece ( posX, posY ) ) ), disabled True ] [] ]
+                            True -> 
+                                [ button [ onClick (ClickOnCase ( NoPiece ( posX, posY ) ) ), class "possible-move" ] [] ]                                    
+                    )
+                Full piece -> 
+                    [ button [ onClick (ClickOnCase ( FocusedPiece piece ) ) ]
+                        [ img [ src ("src/" ++ (caseToImage piece)) ] [] ]
+                    ]                            
+        )
 
 findCaseFromCoordinates : (Int, Int) -> List Piece.Piece -> Case
 findCaseFromCoordinates =

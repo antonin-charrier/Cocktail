@@ -29,12 +29,13 @@
       background-color: #F8DBAF;
     }
     .case button:focus {
-      outline: solid 3px green;
-      z-index: 100;
+      outline: solid 5px #6E614D;
+      z-index: 200;
     }
     .case button.possible-move {
-      outline: solid 3px red;
+      outline: solid 1px #F8DBAF;
       z-index: 100;
+      background-color: #82540E;
     }
     .case img {
       height: 80%;
@@ -45,6 +46,12 @@
     }
     .line:nth-child(2n) .case:nth-child(2n) button {
       background-color: #C89742;
+    }
+    .line:nth-child(2n+1) .case:nth-child(2n+1) button.possible-move {
+      background-color: #82540E;
+    }
+    .line:nth-child(2n) .case:nth-child(2n) button.possible-move {
+      background-color: #82540E;
     }
     
   </style>
