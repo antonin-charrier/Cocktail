@@ -17,6 +17,7 @@ type alias Model =
     , possibleMoves : List (Int, Int)
     , capturedPiecesWhite : List Piece.Piece
     , capturedPiecesBlack : List Piece.Piece
+    , state : State
     }
 
 type Case = Full Piece.Piece
@@ -26,6 +27,11 @@ type FocusOn = FocusedPiece Piece.Piece
     | NoPiece (Int, Int)
     | PieceToCapture Piece.Piece
 
+type State = Turn Player
+    | Win Player
+
+type Player = Player1
+    | Player2
 
 initialModel : Model
 initialModel =
@@ -68,6 +74,7 @@ initialModel =
         , possibleMoves = []
         , capturedPiecesBlack = []
         , capturedPiecesWhite = []
+        , state = Turn Player1
     }
 
 
@@ -82,19 +89,26 @@ update msg model =
            case focusOn of
                 FocusedPiece piece ->
                     { focusOn = focusOn, pieces = model.pieces, possibleMoves = ( Piece.possibleRealMoves piece model.pieces )
-                        , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
+                        , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite, state = model.state }
                 NoPiece coordinates -> 
                     ( 
                         case model.focusOn of
                             FocusedPiece piece ->
                                 { focusOn = NoPiece ( 0, 0 ), pieces = ( movePiece model.pieces piece coordinates ), possibleMoves = []
-                                    , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
+                                    , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite, state = (
+                                        case model.state of
+                                            Turn player ->
+                                                case player of
+                                                    Player1 -> Turn Player2
+                                                    Player2 -> Turn Player1
+                                            Win player -> Win player
+                                    ) }
                             NoPiece _ -> 
                                 { focusOn = NoPiece ( 0, 0 ), pieces = model.pieces, possibleMoves = []
-                                    , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
+                                    , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite, state = model.state }
                             PieceToCapture _ -> 
                                 { focusOn = NoPiece ( 0, 0 ), pieces = model.pieces, possibleMoves = []
-                                    , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
+                                    , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite, state = model.state }
                     )
                 PieceToCapture pieceToCapture ->
                     case model.focusOn of
@@ -112,13 +126,25 @@ update msg model =
                                             model.capturedPiecesWhite
                                         Piece.White -> 
                                             pieceToCapture :: model.capturedPiecesWhite
+                                ), state = (
+                                    if pieceToCapture.pieceType == Piece.King then
+                                        case pieceToCapture.color of
+                                            Piece.White -> Win Player2
+                                            Piece.Black -> Win Player1
+                                    else
+                                        case model.state of
+                                            Turn player ->
+                                                case player of
+                                                    Player1 -> Turn Player2
+                                                    Player2 -> Turn Player1
+                                            Win player -> Win player
                                 ) }
                         NoPiece _ -> 
                             { focusOn = NoPiece ( 0, 0 ), pieces = model.pieces, possibleMoves = []
-                                , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
+                                , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite, state = model.state }
                         PieceToCapture _ -> 
                             { focusOn = NoPiece ( 0, 0 ), pieces = model.pieces, possibleMoves = []
-                                , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
+                                , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite, state = model.state }
 
 movePiece : List Piece.Piece -> Piece.Piece -> (Int, Int) -> List Piece.Piece
 movePiece pieces currentPiece newCoordinates = 
@@ -136,8 +162,9 @@ view : Model -> Html Msg
 view model =
     div [ class "board-container"] [ 
         div [ class "board" ] (buildBoard model 8)
-        , div [ class "captured-pieces" ] [
+        , div [ class "side-panel" ] [
             div [ class "captured-pieces-white" ] (buildCapturedPieces model.capturedPiecesWhite)
+            , div [ class "announce" ] [ (buildAnnounce model.state) ]
             , div [ class "captured-pieces-black" ] (buildCapturedPieces model.capturedPiecesBlack)
         ]
     ]
@@ -157,9 +184,20 @@ buildBoard model max =
             [ div [ class "line" ] (buildLine model max 8)
             ]
             (buildBoard model (max - 1))
-
     else
         []
+
+buildAnnounce : State -> Html Msg
+buildAnnounce state =
+    case state of 
+        Turn player ->
+            case player of
+                Player1 -> text "Player 1 (White), it is your turn to play"
+                Player2 -> text "Player 2 (Black), it is your turn to play"
+        Win player ->
+            case player of
+                Player1 -> text "Player 1 (White) wins!"
+                Player2 -> text "Player 2 (Black) wins!"
 
 buildCapturedPieces : List Piece.Piece -> List (Html Msg)
 buildCapturedPieces capturedPieces = 
@@ -184,19 +222,45 @@ buildCase model posX posY =
                             False ->
                                 [ button [ onClick ( ClickOnCase ( NoPiece ( posX, posY ) ) ), disabled True ] [] ]
                             True -> 
-                                [ button [ onClick ( ClickOnCase ( NoPiece ( posX, posY ) ) ), class "possible-move" ] [] ]                                    
+                                case model.state of
+                                    Turn player ->
+                                        [ button [ onClick ( ClickOnCase ( NoPiece ( posX, posY ) ) ), class "possible-move" ] [] ]
+                                    Win _ ->
+                                        [ button [ onClick ( ClickOnCase ( NoPiece ( posX, posY ) ) ), disabled True ] [] ]
                     )
-                Full piece -> 
+                Full piece ->
                     (
                         case (List.member (posX, posY) model.possibleMoves) of
                             False ->
-                                [ button [ onClick ( ClickOnCase ( FocusedPiece piece ) ) ]
-                                    [ img [ src ("src/" ++ (srcImageFromPiece piece)) ] [] ]
-                                ]
-                            True -> 
-                                [ button [ onClick ( ClickOnCase ( PieceToCapture piece ) ), class "possible-move" ]
-                                    [ img [ src ("src/" ++ (srcImageFromPiece piece)) ] [] ]
-                                ]
+                                case model.state of
+                                    Turn player ->
+                                        if player == Player1 && piece.color == Piece.White then
+                                            [ button [ onClick ( ClickOnCase ( FocusedPiece piece ) ) ]
+                                                [ img [ src ("src/" ++ (srcImageFromPiece piece)) ] [] ]
+                                            ]
+                                        else if player == Player2 && piece.color == Piece.Black then
+                                            [ button [ onClick ( ClickOnCase ( FocusedPiece piece ) ) ]
+                                                [ img [ src ("src/" ++ (srcImageFromPiece piece)) ] [] ]
+                                            ]
+                                        else
+                                            [ button [ onClick ( ClickOnCase ( FocusedPiece piece ) ), disabled True ]
+                                                [ img [ src ("src/" ++ (srcImageFromPiece piece)) ] [] ]
+                                            ]
+                                    Win _ ->
+                                        [ button [ onClick ( ClickOnCase ( FocusedPiece piece ) ), disabled True ]
+                                            [ img [ src ("src/" ++ (srcImageFromPiece piece)) ] [] ]
+                                        ]
+
+                            True ->
+                                case model.state of
+                                    Turn player ->
+                                        [ button [ onClick ( ClickOnCase ( PieceToCapture piece ) ), class "possible-move" ]
+                                            [ img [ src ("src/" ++ (srcImageFromPiece piece)) ] [] ]
+                                        ]
+                                    Win _ ->
+                                        [ button [ onClick ( ClickOnCase ( FocusedPiece piece ) ), disabled True ]
+                                            [ img [ src ("src/" ++ (srcImageFromPiece piece)) ] [] ]
+                                        ]
                     )
                         
         )

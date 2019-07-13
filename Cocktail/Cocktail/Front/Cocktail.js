@@ -4313,6 +4313,10 @@ function _Browser_load(url)
 var author$project$Board$NoPiece = function (a) {
 	return {$: 'NoPiece', a: a};
 };
+var author$project$Board$Player1 = {$: 'Player1'};
+var author$project$Board$Turn = function (a) {
+	return {$: 'Turn', a: a};
+};
 var author$project$Piece$Bishop = {$: 'Bishop'};
 var author$project$Piece$Black = {$: 'Black'};
 var author$project$Piece$King = {$: 'King'};
@@ -4602,7 +4606,12 @@ var author$project$Board$initialModel = {
 			pieceType: author$project$Piece$Rook
 		}
 		]),
-	possibleMoves: _List_Nil
+	possibleMoves: _List_Nil,
+	state: author$project$Board$Turn(author$project$Board$Player1)
+};
+var author$project$Board$Player2 = {$: 'Player2'};
+var author$project$Board$Win = function (a) {
+	return {$: 'Win', a: a};
 };
 var elm$core$Basics$neq = _Utils_notEqual;
 var elm$core$Basics$add = _Basics_add;
@@ -5517,7 +5526,8 @@ var author$project$Board$update = F2(
 					capturedPiecesWhite: model.capturedPiecesWhite,
 					focusOn: focusOn,
 					pieces: model.pieces,
-					possibleMoves: A2(author$project$Piece$possibleRealMoves, piece, model.pieces)
+					possibleMoves: A2(author$project$Piece$possibleRealMoves, piece, model.pieces),
+					state: model.state
 				};
 			case 'NoPiece':
 				var coordinates = focusOn.a;
@@ -5531,7 +5541,21 @@ var author$project$Board$update = F2(
 							focusOn: author$project$Board$NoPiece(
 								_Utils_Tuple2(0, 0)),
 							pieces: A3(author$project$Board$movePiece, model.pieces, piece, coordinates),
-							possibleMoves: _List_Nil
+							possibleMoves: _List_Nil,
+							state: function () {
+								var _n3 = model.state;
+								if (_n3.$ === 'Turn') {
+									var player = _n3.a;
+									if (player.$ === 'Player1') {
+										return author$project$Board$Turn(author$project$Board$Player2);
+									} else {
+										return author$project$Board$Turn(author$project$Board$Player1);
+									}
+								} else {
+									var player = _n3.a;
+									return author$project$Board$Win(player);
+								}
+							}()
 						};
 					case 'NoPiece':
 						return {
@@ -5540,7 +5564,8 @@ var author$project$Board$update = F2(
 							focusOn: author$project$Board$NoPiece(
 								_Utils_Tuple2(0, 0)),
 							pieces: model.pieces,
-							possibleMoves: _List_Nil
+							possibleMoves: _List_Nil,
+							state: model.state
 						};
 					default:
 						return {
@@ -5549,27 +5574,28 @@ var author$project$Board$update = F2(
 							focusOn: author$project$Board$NoPiece(
 								_Utils_Tuple2(0, 0)),
 							pieces: model.pieces,
-							possibleMoves: _List_Nil
+							possibleMoves: _List_Nil,
+							state: model.state
 						};
 				}
 			default:
 				var pieceToCapture = focusOn.a;
-				var _n3 = model.focusOn;
-				switch (_n3.$) {
+				var _n5 = model.focusOn;
+				switch (_n5.$) {
 					case 'FocusedPiece':
-						var piece = _n3.a;
+						var piece = _n5.a;
 						return {
 							capturedPiecesBlack: function () {
-								var _n4 = pieceToCapture.color;
-								if (_n4.$ === 'Black') {
+								var _n6 = pieceToCapture.color;
+								if (_n6.$ === 'Black') {
 									return A2(elm$core$List$cons, pieceToCapture, model.capturedPiecesBlack);
 								} else {
 									return model.capturedPiecesBlack;
 								}
 							}(),
 							capturedPiecesWhite: function () {
-								var _n5 = pieceToCapture.color;
-								if (_n5.$ === 'Black') {
+								var _n7 = pieceToCapture.color;
+								if (_n7.$ === 'Black') {
 									return model.capturedPiecesWhite;
 								} else {
 									return A2(elm$core$List$cons, pieceToCapture, model.capturedPiecesWhite);
@@ -5578,7 +5604,30 @@ var author$project$Board$update = F2(
 							focusOn: author$project$Board$NoPiece(
 								_Utils_Tuple2(0, 0)),
 							pieces: A3(author$project$Board$moveAndCapture, model.pieces, piece, pieceToCapture),
-							possibleMoves: _List_Nil
+							possibleMoves: _List_Nil,
+							state: function () {
+								if (_Utils_eq(pieceToCapture.pieceType, author$project$Piece$King)) {
+									var _n8 = pieceToCapture.color;
+									if (_n8.$ === 'White') {
+										return author$project$Board$Win(author$project$Board$Player2);
+									} else {
+										return author$project$Board$Win(author$project$Board$Player1);
+									}
+								} else {
+									var _n9 = model.state;
+									if (_n9.$ === 'Turn') {
+										var player = _n9.a;
+										if (player.$ === 'Player1') {
+											return author$project$Board$Turn(author$project$Board$Player2);
+										} else {
+											return author$project$Board$Turn(author$project$Board$Player1);
+										}
+									} else {
+										var player = _n9.a;
+										return author$project$Board$Win(player);
+									}
+								}
+							}()
 						};
 					case 'NoPiece':
 						return {
@@ -5587,7 +5636,8 @@ var author$project$Board$update = F2(
 							focusOn: author$project$Board$NoPiece(
 								_Utils_Tuple2(0, 0)),
 							pieces: model.pieces,
-							possibleMoves: _List_Nil
+							possibleMoves: _List_Nil,
+							state: model.state
 						};
 					default:
 						return {
@@ -5596,114 +5646,11 @@ var author$project$Board$update = F2(
 							focusOn: author$project$Board$NoPiece(
 								_Utils_Tuple2(0, 0)),
 							pieces: model.pieces,
-							possibleMoves: _List_Nil
+							possibleMoves: _List_Nil,
+							state: model.state
 						};
 				}
 		}
-	});
-var author$project$Board$ClickOnCase = function (a) {
-	return {$: 'ClickOnCase', a: a};
-};
-var author$project$Board$FocusedPiece = function (a) {
-	return {$: 'FocusedPiece', a: a};
-};
-var author$project$Board$PieceToCapture = function (a) {
-	return {$: 'PieceToCapture', a: a};
-};
-var author$project$Board$Empty = {$: 'Empty'};
-var author$project$Board$Full = function (a) {
-	return {$: 'Full', a: a};
-};
-var author$project$Board$filterFromCoordinates = function (pos) {
-	return function (pieces) {
-		return A2(
-			elm$core$List$filter,
-			function (item) {
-				return _Utils_eq(item.coordinates.a, pos.a) && _Utils_eq(item.coordinates.b, pos.b);
-			},
-			pieces);
-	};
-};
-var elm$core$Maybe$Just = function (a) {
-	return {$: 'Just', a: a};
-};
-var elm$core$Maybe$Nothing = {$: 'Nothing'};
-var elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return elm$core$Maybe$Just(x);
-	} else {
-		return elm$core$Maybe$Nothing;
-	}
-};
-var author$project$Board$findCaseFromCoordinates = function (pos) {
-	return function (pieces) {
-		var _n0 = elm$core$List$head(
-			A2(author$project$Board$filterFromCoordinates, pos, pieces));
-		if (_n0.$ === 'Just') {
-			var piece = _n0.a;
-			return author$project$Board$Full(piece);
-		} else {
-			return author$project$Board$Empty;
-		}
-	};
-};
-var author$project$Board$srcImageFromPiece = function (piece) {
-	var _n0 = piece.pieceType;
-	switch (_n0.$) {
-		case 'King':
-			var _n1 = piece.color;
-			if (_n1.$ === 'White') {
-				return 'icon.king.light.svg';
-			} else {
-				return 'icon.king.dark.svg';
-			}
-		case 'Queen':
-			var _n2 = piece.color;
-			if (_n2.$ === 'White') {
-				return 'icon.queen.light.svg';
-			} else {
-				return 'icon.queen.dark.svg';
-			}
-		case 'Bishop':
-			var _n3 = piece.color;
-			if (_n3.$ === 'White') {
-				return 'icon.bishop.light.svg';
-			} else {
-				return 'icon.bishop.dark.svg';
-			}
-		case 'Knight':
-			var _n4 = piece.color;
-			if (_n4.$ === 'White') {
-				return 'icon.knight.light.svg';
-			} else {
-				return 'icon.knight.dark.svg';
-			}
-		case 'Rook':
-			var _n5 = piece.color;
-			if (_n5.$ === 'White') {
-				return 'icon.rook.light.svg';
-			} else {
-				return 'icon.rook.dark.svg';
-			}
-		default:
-			var _n6 = piece.color;
-			if (_n6.$ === 'White') {
-				return 'icon.pawn.light.svg';
-			} else {
-				return 'icon.pawn.dark.svg';
-			}
-	}
-};
-var elm$core$List$member = F2(
-	function (x, xs) {
-		return A2(
-			elm$core$List$any,
-			function (a) {
-				return _Utils_eq(a, x);
-			},
-			xs);
 	});
 var elm$core$Result$isOk = function (result) {
 	if (result.$ === 'Ok') {
@@ -5851,6 +5798,10 @@ var elm$core$Array$initialize = F2(
 			return A5(elm$core$Array$initializeHelp, fn, initialFromIndex, len, _List_Nil, tail);
 		}
 	});
+var elm$core$Maybe$Just = function (a) {
+	return {$: 'Just', a: a};
+};
+var elm$core$Maybe$Nothing = {$: 'Nothing'};
 var elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
 };
@@ -6053,6 +6004,125 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 			return 3;
 	}
 };
+var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
+var author$project$Board$buildAnnounce = function (state) {
+	if (state.$ === 'Turn') {
+		var player = state.a;
+		if (player.$ === 'Player1') {
+			return elm$html$Html$text('Player 1 (White), it is your turn to play');
+		} else {
+			return elm$html$Html$text('Player 2 (Black), it is your turn to play');
+		}
+	} else {
+		var player = state.a;
+		if (player.$ === 'Player1') {
+			return elm$html$Html$text('Player 1 (White) wins!');
+		} else {
+			return elm$html$Html$text('Player 2 (Black) wins!');
+		}
+	}
+};
+var author$project$Board$ClickOnCase = function (a) {
+	return {$: 'ClickOnCase', a: a};
+};
+var author$project$Board$FocusedPiece = function (a) {
+	return {$: 'FocusedPiece', a: a};
+};
+var author$project$Board$PieceToCapture = function (a) {
+	return {$: 'PieceToCapture', a: a};
+};
+var author$project$Board$Empty = {$: 'Empty'};
+var author$project$Board$Full = function (a) {
+	return {$: 'Full', a: a};
+};
+var author$project$Board$filterFromCoordinates = function (pos) {
+	return function (pieces) {
+		return A2(
+			elm$core$List$filter,
+			function (item) {
+				return _Utils_eq(item.coordinates.a, pos.a) && _Utils_eq(item.coordinates.b, pos.b);
+			},
+			pieces);
+	};
+};
+var elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return elm$core$Maybe$Just(x);
+	} else {
+		return elm$core$Maybe$Nothing;
+	}
+};
+var author$project$Board$findCaseFromCoordinates = function (pos) {
+	return function (pieces) {
+		var _n0 = elm$core$List$head(
+			A2(author$project$Board$filterFromCoordinates, pos, pieces));
+		if (_n0.$ === 'Just') {
+			var piece = _n0.a;
+			return author$project$Board$Full(piece);
+		} else {
+			return author$project$Board$Empty;
+		}
+	};
+};
+var author$project$Board$srcImageFromPiece = function (piece) {
+	var _n0 = piece.pieceType;
+	switch (_n0.$) {
+		case 'King':
+			var _n1 = piece.color;
+			if (_n1.$ === 'White') {
+				return 'icon.king.light.svg';
+			} else {
+				return 'icon.king.dark.svg';
+			}
+		case 'Queen':
+			var _n2 = piece.color;
+			if (_n2.$ === 'White') {
+				return 'icon.queen.light.svg';
+			} else {
+				return 'icon.queen.dark.svg';
+			}
+		case 'Bishop':
+			var _n3 = piece.color;
+			if (_n3.$ === 'White') {
+				return 'icon.bishop.light.svg';
+			} else {
+				return 'icon.bishop.dark.svg';
+			}
+		case 'Knight':
+			var _n4 = piece.color;
+			if (_n4.$ === 'White') {
+				return 'icon.knight.light.svg';
+			} else {
+				return 'icon.knight.dark.svg';
+			}
+		case 'Rook':
+			var _n5 = piece.color;
+			if (_n5.$ === 'White') {
+				return 'icon.rook.light.svg';
+			} else {
+				return 'icon.rook.dark.svg';
+			}
+		default:
+			var _n6 = piece.color;
+			if (_n6.$ === 'White') {
+				return 'icon.pawn.light.svg';
+			} else {
+				return 'icon.pawn.dark.svg';
+			}
+	}
+};
+var elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
 var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$img = _VirtualDom_node('img');
@@ -6131,74 +6201,192 @@ var author$project$Board$buildCase = F3(
 								_List_Nil)
 							]);
 					} else {
-						return _List_fromArray(
-							[
-								A2(
-								elm$html$Html$button,
-								_List_fromArray(
-									[
-										elm$html$Html$Events$onClick(
-										author$project$Board$ClickOnCase(
-											author$project$Board$NoPiece(
-												_Utils_Tuple2(posX, posY)))),
-										elm$html$Html$Attributes$class('possible-move')
-									]),
-								_List_Nil)
-							]);
+						var _n2 = model.state;
+						if (_n2.$ === 'Turn') {
+							var player = _n2.a;
+							return _List_fromArray(
+								[
+									A2(
+									elm$html$Html$button,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(
+											author$project$Board$ClickOnCase(
+												author$project$Board$NoPiece(
+													_Utils_Tuple2(posX, posY)))),
+											elm$html$Html$Attributes$class('possible-move')
+										]),
+									_List_Nil)
+								]);
+						} else {
+							return _List_fromArray(
+								[
+									A2(
+									elm$html$Html$button,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(
+											author$project$Board$ClickOnCase(
+												author$project$Board$NoPiece(
+													_Utils_Tuple2(posX, posY)))),
+											elm$html$Html$Attributes$disabled(true)
+										]),
+									_List_Nil)
+								]);
+						}
 					}
 				} else {
 					var piece = _n0.a;
-					var _n2 = A2(
+					var _n3 = A2(
 						elm$core$List$member,
 						_Utils_Tuple2(posX, posY),
 						model.possibleMoves);
-					if (!_n2) {
-						return _List_fromArray(
-							[
-								A2(
-								elm$html$Html$button,
-								_List_fromArray(
-									[
-										elm$html$Html$Events$onClick(
-										author$project$Board$ClickOnCase(
-											author$project$Board$FocusedPiece(piece)))
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$img,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$src(
-												'src/' + author$project$Board$srcImageFromPiece(piece))
-											]),
-										_List_Nil)
-									]))
-							]);
+					if (!_n3) {
+						var _n4 = model.state;
+						if (_n4.$ === 'Turn') {
+							var player = _n4.a;
+							return (_Utils_eq(player, author$project$Board$Player1) && _Utils_eq(piece.color, author$project$Piece$White)) ? _List_fromArray(
+								[
+									A2(
+									elm$html$Html$button,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(
+											author$project$Board$ClickOnCase(
+												author$project$Board$FocusedPiece(piece)))
+										]),
+									_List_fromArray(
+										[
+											A2(
+											elm$html$Html$img,
+											_List_fromArray(
+												[
+													elm$html$Html$Attributes$src(
+													'src/' + author$project$Board$srcImageFromPiece(piece))
+												]),
+											_List_Nil)
+										]))
+								]) : ((_Utils_eq(player, author$project$Board$Player2) && _Utils_eq(piece.color, author$project$Piece$Black)) ? _List_fromArray(
+								[
+									A2(
+									elm$html$Html$button,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(
+											author$project$Board$ClickOnCase(
+												author$project$Board$FocusedPiece(piece)))
+										]),
+									_List_fromArray(
+										[
+											A2(
+											elm$html$Html$img,
+											_List_fromArray(
+												[
+													elm$html$Html$Attributes$src(
+													'src/' + author$project$Board$srcImageFromPiece(piece))
+												]),
+											_List_Nil)
+										]))
+								]) : _List_fromArray(
+								[
+									A2(
+									elm$html$Html$button,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(
+											author$project$Board$ClickOnCase(
+												author$project$Board$FocusedPiece(piece))),
+											elm$html$Html$Attributes$disabled(true)
+										]),
+									_List_fromArray(
+										[
+											A2(
+											elm$html$Html$img,
+											_List_fromArray(
+												[
+													elm$html$Html$Attributes$src(
+													'src/' + author$project$Board$srcImageFromPiece(piece))
+												]),
+											_List_Nil)
+										]))
+								]));
+						} else {
+							return _List_fromArray(
+								[
+									A2(
+									elm$html$Html$button,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(
+											author$project$Board$ClickOnCase(
+												author$project$Board$FocusedPiece(piece))),
+											elm$html$Html$Attributes$disabled(true)
+										]),
+									_List_fromArray(
+										[
+											A2(
+											elm$html$Html$img,
+											_List_fromArray(
+												[
+													elm$html$Html$Attributes$src(
+													'src/' + author$project$Board$srcImageFromPiece(piece))
+												]),
+											_List_Nil)
+										]))
+								]);
+						}
 					} else {
-						return _List_fromArray(
-							[
-								A2(
-								elm$html$Html$button,
-								_List_fromArray(
-									[
-										elm$html$Html$Events$onClick(
-										author$project$Board$ClickOnCase(
-											author$project$Board$PieceToCapture(piece))),
-										elm$html$Html$Attributes$class('possible-move')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$img,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$src(
-												'src/' + author$project$Board$srcImageFromPiece(piece))
-											]),
-										_List_Nil)
-									]))
-							]);
+						var _n5 = model.state;
+						if (_n5.$ === 'Turn') {
+							var player = _n5.a;
+							return _List_fromArray(
+								[
+									A2(
+									elm$html$Html$button,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(
+											author$project$Board$ClickOnCase(
+												author$project$Board$PieceToCapture(piece))),
+											elm$html$Html$Attributes$class('possible-move')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											elm$html$Html$img,
+											_List_fromArray(
+												[
+													elm$html$Html$Attributes$src(
+													'src/' + author$project$Board$srcImageFromPiece(piece))
+												]),
+											_List_Nil)
+										]))
+								]);
+						} else {
+							return _List_fromArray(
+								[
+									A2(
+									elm$html$Html$button,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(
+											author$project$Board$ClickOnCase(
+												author$project$Board$FocusedPiece(piece))),
+											elm$html$Html$Attributes$disabled(true)
+										]),
+									_List_fromArray(
+										[
+											A2(
+											elm$html$Html$img,
+											_List_fromArray(
+												[
+													elm$html$Html$Attributes$src(
+													'src/' + author$project$Board$srcImageFromPiece(piece))
+												]),
+											_List_Nil)
+										]))
+								]);
+						}
 					}
 				}
 			}());
@@ -6278,7 +6466,7 @@ var author$project$Board$view = function (model) {
 				elm$html$Html$div,
 				_List_fromArray(
 					[
-						elm$html$Html$Attributes$class('captured-pieces')
+						elm$html$Html$Attributes$class('side-panel')
 					]),
 				_List_fromArray(
 					[
@@ -6289,6 +6477,16 @@ var author$project$Board$view = function (model) {
 								elm$html$Html$Attributes$class('captured-pieces-white')
 							]),
 						author$project$Board$buildCapturedPieces(model.capturedPiecesWhite)),
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('announce')
+							]),
+						_List_fromArray(
+							[
+								author$project$Board$buildAnnounce(model.state)
+							])),
 						A2(
 						elm$html$Html$div,
 						_List_fromArray(
