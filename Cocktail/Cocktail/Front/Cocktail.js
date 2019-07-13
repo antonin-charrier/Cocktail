@@ -4321,6 +4321,7 @@ var author$project$Piece$Pawn = {$: 'Pawn'};
 var author$project$Piece$Queen = {$: 'Queen'};
 var author$project$Piece$Rook = {$: 'Rook'};
 var author$project$Piece$White = {$: 'White'};
+var elm$core$Basics$False = {$: 'False'};
 var elm$core$Basics$EQ = {$: 'EQ'};
 var elm$core$Basics$LT = {$: 'LT'};
 var elm$core$Elm$JsArray$foldr = _JsArray_foldr;
@@ -4411,161 +4412,193 @@ var author$project$Board$initialModel = {
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(1, 1),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Rook
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(2, 1),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Knight
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(3, 1),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Bishop
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(4, 1),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Queen
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(5, 1),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$King
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(6, 1),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Bishop
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(7, 1),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Knight
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(8, 1),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Rook
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(1, 2),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(2, 2),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(3, 2),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(4, 2),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(5, 2),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(6, 2),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(7, 2),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$White,
 			coordinates: _Utils_Tuple2(8, 2),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(1, 7),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(2, 7),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(3, 7),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(4, 7),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(5, 7),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(6, 7),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(7, 7),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(8, 7),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Pawn
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(1, 8),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Rook
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(2, 8),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Knight
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(3, 8),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Bishop
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(4, 8),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Queen
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(5, 8),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$King
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(6, 8),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Bishop
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(7, 8),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Knight
 		},
 			{
 			color: author$project$Piece$Black,
 			coordinates: _Utils_Tuple2(8, 8),
+			hasAlreadyMoved: false,
 			pieceType: author$project$Piece$Rook
 		}
 		]),
@@ -4671,13 +4704,14 @@ var author$project$Board$capturePiece = F2(
 			},
 			pieces);
 	});
+var elm$core$Basics$True = {$: 'True'};
 var author$project$Board$movePiece = F3(
 	function (pieces, currentPiece, newCoordinates) {
 		return A2(
 			elm$core$List$cons,
 			_Utils_update(
 				currentPiece,
-				{coordinates: newCoordinates}),
+				{coordinates: newCoordinates, hasAlreadyMoved: true}),
 			A2(
 				elm$core$List$filter,
 				function (piece) {
@@ -4693,10 +4727,58 @@ var author$project$Board$moveAndCapture = F3(
 			currentPiece,
 			pieceToCapture.coordinates);
 	});
-var author$project$Piece$Down = {$: 'Down'};
-var author$project$Piece$Left = {$: 'Left'};
-var author$project$Piece$Right = {$: 'Right'};
-var author$project$Piece$Up = {$: 'Up'};
+var elm$core$Basics$or = _Basics_or;
+var elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var elm$core$Basics$not = _Basics_not;
+var elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var elm$core$List$all = F2(
+	function (isOkay, list) {
+		return !A2(
+			elm$core$List$any,
+			A2(elm$core$Basics$composeL, elm$core$Basics$not, isOkay),
+			list);
+	});
+var author$project$Piece$filterAllyObstacles = F3(
+	function (moves, piece, pieces) {
+		return A2(
+			elm$core$List$filter,
+			function (coordinates) {
+				return A2(
+					elm$core$List$all,
+					function (otherPiece) {
+						return (!_Utils_eq(piece.color, otherPiece.color)) || (!_Utils_eq(otherPiece.coordinates, coordinates));
+					},
+					pieces);
+			},
+			moves);
+	});
+var elm$core$Basics$and = _Basics_and;
+var elm$core$Basics$eq = _Utils_equal;
+var elm$core$Basics$sub = _Basics_sub;
 var elm$core$Tuple$first = function (_n0) {
 	var x = _n0.a;
 	return x;
@@ -4705,12 +4787,42 @@ var elm$core$Tuple$second = function (_n0) {
 	var y = _n0.b;
 	return y;
 };
+var author$project$Piece$filterPawnMoves = F3(
+	function (moves, piece, pieces) {
+		return A2(
+			elm$core$List$filter,
+			function (coordinates) {
+				return A2(
+					elm$core$List$all,
+					function (otherPiece) {
+						return (!_Utils_eq(piece.pieceType, author$project$Piece$Pawn)) || ((!_Utils_eq(otherPiece.coordinates, coordinates)) && (_Utils_eq(
+							coordinates,
+							_Utils_Tuple2(piece.coordinates.a, piece.coordinates.b + 1)) || _Utils_eq(
+							coordinates,
+							_Utils_Tuple2(piece.coordinates.a, piece.coordinates.b + 2))));
+					},
+					pieces) || A2(
+					elm$core$List$any,
+					function (otherPiece) {
+						return (!_Utils_eq(otherPiece.color, piece.color)) && (_Utils_eq(otherPiece.coordinates, coordinates) && (_Utils_eq(
+							coordinates,
+							_Utils_Tuple2(piece.coordinates.a - 1, piece.coordinates.b + 1)) || _Utils_eq(
+							coordinates,
+							_Utils_Tuple2(piece.coordinates.a + 1, piece.coordinates.b + 1))));
+					},
+					pieces);
+			},
+			moves);
+	});
+var author$project$Piece$Down = {$: 'Down'};
+var author$project$Piece$Left = {$: 'Left'};
+var author$project$Piece$Right = {$: 'Right'};
+var author$project$Piece$Up = {$: 'Up'};
 var author$project$Piece$fullMoveWithCoordinates = F2(
 	function (coordinates, vector) {
 		return _Utils_Tuple2(coordinates.a + vector.a, coordinates.b + vector.b);
 	});
 var elm$core$Basics$mul = _Basics_mul;
-var elm$core$Basics$sub = _Basics_sub;
 var author$project$Piece$regularMoveToFullMove = F2(
 	function (coordinates, multiplicator) {
 		return _Utils_Tuple2((coordinates.a * (multiplicator - 1)) + coordinates.a, (coordinates.b * (multiplicator - 1)) + coordinates.b);
@@ -5259,15 +5371,22 @@ var author$project$Piece$possibleRegularMoves = function (piece) {
 								1,
 								piece.coordinates),
 							_Utils_ap(
-								A3(
-									author$project$Piece$fullMoves,
-									A2(
-										author$project$Piece$regularMoves,
-										_List_fromArray(
-											[author$project$Piece$Up]),
-										piece.coordinates),
-									2,
-									piece.coordinates),
+								function () {
+									var _n2 = piece.hasAlreadyMoved;
+									if (_n2) {
+										return _List_Nil;
+									} else {
+										return A3(
+											author$project$Piece$fullMoves,
+											A2(
+												author$project$Piece$regularMoves,
+												_List_fromArray(
+													[author$project$Piece$Up]),
+												piece.coordinates),
+											2,
+											piece.coordinates);
+									}
+								}(),
 								_Utils_ap(
 									A3(
 										author$project$Piece$fullMoves,
@@ -5299,15 +5418,22 @@ var author$project$Piece$possibleRegularMoves = function (piece) {
 								1,
 								piece.coordinates),
 							_Utils_ap(
-								A3(
-									author$project$Piece$fullMoves,
-									A2(
-										author$project$Piece$regularMoves,
-										_List_fromArray(
-											[author$project$Piece$Down]),
-										piece.coordinates),
-									2,
-									piece.coordinates),
+								function () {
+									var _n3 = piece.hasAlreadyMoved;
+									if (_n3) {
+										return _List_Nil;
+									} else {
+										return A3(
+											author$project$Piece$fullMoves,
+											A2(
+												author$project$Piece$regularMoves,
+												_List_fromArray(
+													[author$project$Piece$Down]),
+												piece.coordinates),
+											2,
+											piece.coordinates);
+									}
+								}(),
 								_Utils_ap(
 									A3(
 										author$project$Piece$fullMoves,
@@ -5331,6 +5457,19 @@ var author$project$Piece$possibleRegularMoves = function (piece) {
 			}
 		}());
 };
+var author$project$Piece$possibleRealMoves = F2(
+	function (piece, pieces) {
+		return A3(
+			author$project$Piece$filterPawnMoves,
+			A3(
+				author$project$Piece$filterAllyObstacles,
+				elm$core$Set$toList(
+					author$project$Piece$possibleRegularMoves(piece)),
+				piece,
+				pieces),
+			piece,
+			pieces);
+	});
 var author$project$Board$update = F2(
 	function (msg, model) {
 		var focusOn = msg.a;
@@ -5342,8 +5481,7 @@ var author$project$Board$update = F2(
 					capturedPiecesWhite: model.capturedPiecesWhite,
 					focusOn: focusOn,
 					pieces: model.pieces,
-					possibleMoves: elm$core$Set$toList(
-						author$project$Piece$possibleRegularMoves(piece))
+					possibleMoves: A2(author$project$Piece$possibleRealMoves, piece, model.pieces)
 				};
 			case 'NoPiece':
 				var coordinates = focusOn.a;
@@ -5440,8 +5578,6 @@ var author$project$Board$Empty = {$: 'Empty'};
 var author$project$Board$Full = function (a) {
 	return {$: 'Full', a: a};
 };
-var elm$core$Basics$and = _Basics_and;
-var elm$core$Basics$eq = _Utils_equal;
 var author$project$Board$filterFromCoordinates = function (pos) {
 	return function (pieces) {
 		return A2(
@@ -5524,29 +5660,6 @@ var author$project$Board$srcImageFromPiece = function (piece) {
 			}
 	}
 };
-var elm$core$Basics$True = {$: 'True'};
-var elm$core$Basics$False = {$: 'False'};
-var elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
 var elm$core$List$member = F2(
 	function (x, xs) {
 		return A2(
@@ -5723,7 +5836,6 @@ var elm$json$Json$Decode$Index = F2(
 var elm$json$Json$Decode$OneOf = function (a) {
 	return {$: 'OneOf', a: a};
 };
-var elm$core$Basics$or = _Basics_or;
 var elm$core$Char$toCode = _Char_toCode;
 var elm$core$Char$isLower = function (_char) {
 	var code = elm$core$Char$toCode(_char);

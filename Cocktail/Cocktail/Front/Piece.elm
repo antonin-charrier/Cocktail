@@ -1,4 +1,4 @@
-module Piece exposing (Piece, PieceType(..), Color(..), Vector(..), possibleRegularMoves)
+module Piece exposing (Piece, PieceType(..), Color(..), Vector(..), possibleRealMoves, possibleRegularMoves)
 
 import Set
 
@@ -6,6 +6,7 @@ type alias Piece =
     { coordinates : (Int, Int)
     , pieceType : PieceType
     , color : Color
+    , hasAlreadyMoved : Bool
     }
 
 type PieceType
@@ -25,6 +26,41 @@ type Vector
     | Down
     | Right
     | Left
+
+possibleRealMoves : Piece -> List Piece -> List (Int, Int)
+possibleRealMoves piece pieces = 
+    filterPawnMoves (
+        filterAllyObstacles (
+            Set.toList ( possibleRegularMoves piece )
+        ) piece pieces
+    ) piece pieces
+
+filterAllyObstacles : List (Int, Int) -> Piece -> List Piece -> List (Int, Int)
+filterAllyObstacles moves piece pieces = 
+    List.filter ( \coordinates ->
+        List.all ( \otherPiece -> piece.color /= otherPiece.color || otherPiece.coordinates /= coordinates) pieces
+    ) moves
+
+filterPawnMoves : List (Int, Int) -> Piece -> List Piece -> List (Int, Int)
+filterPawnMoves moves piece pieces = 
+    List.filter ( \coordinates ->
+        ( List.all ( \otherPiece ->
+            ( piece.pieceType /= Pawn )
+            || ( otherPiece.coordinates /= coordinates &&
+                (
+                    coordinates == ( ( Tuple.first piece.coordinates ), ( Tuple.second piece.coordinates + 1 ) ) 
+                    || coordinates == ( ( Tuple.first piece.coordinates ), ( Tuple.second piece.coordinates + 2 ) )
+                )
+            )
+        ) pieces ) 
+        || ( List.any (\otherPiece ->
+            otherPiece.color /= piece.color && otherPiece.coordinates == coordinates &&
+            (
+                coordinates == ( ( Tuple.first piece.coordinates - 1 ), ( Tuple.second piece.coordinates + 1 ) )
+                || coordinates == ( ( Tuple.first piece.coordinates + 1 ), ( Tuple.second piece.coordinates + 1 ) )
+            )
+        ) pieces )
+    ) moves
 
 possibleRegularMoves : Piece -> Set.Set (Int, Int)
 possibleRegularMoves piece =
@@ -71,12 +107,20 @@ possibleRegularMoves piece =
                 case piece.color of
                     White ->
                         fullMoves (regularMoves [Up] piece.coordinates) 1 piece.coordinates
-                        ++ fullMoves (regularMoves [Up] piece.coordinates) 2 piece.coordinates
+                        ++ (
+                            case piece.hasAlreadyMoved of
+                                True -> []
+                                False -> fullMoves (regularMoves [Up] piece.coordinates) 2 piece.coordinates
+                        )
                         ++ fullMoves (regularMoves [Up, Right] piece.coordinates) 1 piece.coordinates
                         ++ fullMoves (regularMoves [Up, Left] piece.coordinates) 1 piece.coordinates
                     Black ->
                         fullMoves (regularMoves [Down] piece.coordinates) 1 piece.coordinates
-                        ++ fullMoves (regularMoves [Down] piece.coordinates) 2 piece.coordinates
+                        ++ (
+                            case piece.hasAlreadyMoved of
+                                True -> []
+                                False -> fullMoves (regularMoves [Down] piece.coordinates) 2 piece.coordinates
+                        )
                         ++ fullMoves (regularMoves [Down, Right] piece.coordinates) 1 piece.coordinates
                         ++ fullMoves (regularMoves [Down, Left] piece.coordinates) 1 piece.coordinates
     )

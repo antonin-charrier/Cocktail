@@ -32,38 +32,38 @@ initialModel =
     { 
         focusOn = NoPiece ( 0, 0 )
         , pieces = [
-            { coordinates = (1, 1), pieceType = Piece.Rook, color = Piece.White },
-            { coordinates = (2, 1), pieceType = Piece.Knight, color = Piece.White },
-            { coordinates = (3, 1), pieceType = Piece.Bishop, color = Piece.White },
-            { coordinates = (4, 1), pieceType = Piece.Queen, color = Piece.White },
-            { coordinates = (5, 1), pieceType = Piece.King, color = Piece.White },
-            { coordinates = (6, 1), pieceType = Piece.Bishop, color = Piece.White },
-            { coordinates = (7, 1), pieceType = Piece.Knight, color = Piece.White },
-            { coordinates = (8, 1), pieceType = Piece.Rook, color = Piece.White },
-            { coordinates = (1, 2), pieceType = Piece.Pawn, color = Piece.White },
-            { coordinates = (2, 2), pieceType = Piece.Pawn, color = Piece.White },
-            { coordinates = (3, 2), pieceType = Piece.Pawn, color = Piece.White },
-            { coordinates = (4, 2), pieceType = Piece.Pawn, color = Piece.White },
-            { coordinates = (5, 2), pieceType = Piece.Pawn, color = Piece.White },
-            { coordinates = (6, 2), pieceType = Piece.Pawn, color = Piece.White },
-            { coordinates = (7, 2), pieceType = Piece.Pawn, color = Piece.White },
-            { coordinates = (8, 2), pieceType = Piece.Pawn, color = Piece.White },
-            { coordinates = (1, 7), pieceType = Piece.Pawn, color = Piece.Black },
-            { coordinates = (2, 7), pieceType = Piece.Pawn, color = Piece.Black },
-            { coordinates = (3, 7), pieceType = Piece.Pawn, color = Piece.Black },
-            { coordinates = (4, 7), pieceType = Piece.Pawn, color = Piece.Black },
-            { coordinates = (5, 7), pieceType = Piece.Pawn, color = Piece.Black },
-            { coordinates = (6, 7), pieceType = Piece.Pawn, color = Piece.Black },
-            { coordinates = (7, 7), pieceType = Piece.Pawn, color = Piece.Black },
-            { coordinates = (8, 7), pieceType = Piece.Pawn, color = Piece.Black },
-            { coordinates = (1, 8), pieceType = Piece.Rook, color = Piece.Black },
-            { coordinates = (2, 8), pieceType = Piece.Knight, color = Piece.Black },
-            { coordinates = (3, 8), pieceType = Piece.Bishop, color = Piece.Black },
-            { coordinates = (4, 8), pieceType = Piece.Queen, color = Piece.Black },
-            { coordinates = (5, 8), pieceType = Piece.King, color = Piece.Black },
-            { coordinates = (6, 8), pieceType = Piece.Bishop, color = Piece.Black },
-            { coordinates = (7, 8), pieceType = Piece.Knight, color = Piece.Black },
-            { coordinates = (8, 8), pieceType = Piece.Rook, color = Piece.Black }
+            { coordinates = (1, 1), pieceType = Piece.Rook, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (2, 1), pieceType = Piece.Knight, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (3, 1), pieceType = Piece.Bishop, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (4, 1), pieceType = Piece.Queen, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (5, 1), pieceType = Piece.King, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (6, 1), pieceType = Piece.Bishop, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (7, 1), pieceType = Piece.Knight, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (8, 1), pieceType = Piece.Rook, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (1, 2), pieceType = Piece.Pawn, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (2, 2), pieceType = Piece.Pawn, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (3, 2), pieceType = Piece.Pawn, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (4, 2), pieceType = Piece.Pawn, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (5, 2), pieceType = Piece.Pawn, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (6, 2), pieceType = Piece.Pawn, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (7, 2), pieceType = Piece.Pawn, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (8, 2), pieceType = Piece.Pawn, color = Piece.White, hasAlreadyMoved = False },
+            { coordinates = (1, 7), pieceType = Piece.Pawn, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (2, 7), pieceType = Piece.Pawn, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (3, 7), pieceType = Piece.Pawn, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (4, 7), pieceType = Piece.Pawn, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (5, 7), pieceType = Piece.Pawn, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (6, 7), pieceType = Piece.Pawn, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (7, 7), pieceType = Piece.Pawn, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (8, 7), pieceType = Piece.Pawn, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (1, 8), pieceType = Piece.Rook, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (2, 8), pieceType = Piece.Knight, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (3, 8), pieceType = Piece.Bishop, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (4, 8), pieceType = Piece.Queen, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (5, 8), pieceType = Piece.King, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (6, 8), pieceType = Piece.Bishop, color = Piece.Black , hasAlreadyMoved = False},
+            { coordinates = (7, 8), pieceType = Piece.Knight, color = Piece.Black, hasAlreadyMoved = False },
+            { coordinates = (8, 8), pieceType = Piece.Rook, color = Piece.Black, hasAlreadyMoved = False }
         ]
         , possibleMoves = []
         , capturedPiecesBlack = []
@@ -81,7 +81,7 @@ update msg model =
         ClickOnCase focusOn ->
            case focusOn of
                 FocusedPiece piece ->
-                    { focusOn = focusOn, pieces = model.pieces, possibleMoves = Set.toList (Piece.possibleRegularMoves piece)
+                    { focusOn = focusOn, pieces = model.pieces, possibleMoves = ( Piece.possibleRealMoves piece model.pieces )
                         , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
                 NoPiece coordinates -> 
                     ( 
@@ -122,7 +122,7 @@ update msg model =
 
 movePiece : List Piece.Piece -> Piece.Piece -> (Int, Int) -> List Piece.Piece
 movePiece pieces currentPiece newCoordinates = 
-    { currentPiece | coordinates = newCoordinates } :: List.filter ( \piece -> piece.coordinates /= currentPiece.coordinates ) pieces
+    { currentPiece | coordinates = newCoordinates, hasAlreadyMoved = True } :: List.filter ( \piece -> piece.coordinates /= currentPiece.coordinates ) pieces
 
 capturePiece : List Piece.Piece -> Piece.Piece -> List Piece.Piece
 capturePiece pieces pieceToCapture =
@@ -141,7 +141,6 @@ view model =
             , div [ class "captured-pieces-black" ] (buildCapturedPieces model.capturedPiecesBlack)
         ]
     ]
-
 
 main : Program () Model Msg
 main =
