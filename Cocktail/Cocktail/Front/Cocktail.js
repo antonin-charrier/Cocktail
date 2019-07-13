@@ -4402,6 +4402,8 @@ var elm$core$Set$toList = function (_n0) {
 	return elm$core$Dict$keys(dict);
 };
 var author$project$Board$initialModel = {
+	capturedPiecesBlack: _List_Nil,
+	capturedPiecesWhite: _List_Nil,
 	focusOn: author$project$Board$NoPiece(
 		_Utils_Tuple2(0, 0)),
 	pieces: _List_fromArray(
@@ -4660,7 +4662,16 @@ var elm$core$List$filter = F2(
 			_List_Nil,
 			list);
 	});
-var author$project$Board$updatePieces = F3(
+var author$project$Board$capturePiece = F2(
+	function (pieces, pieceToCapture) {
+		return A2(
+			elm$core$List$filter,
+			function (piece) {
+				return !_Utils_eq(piece.coordinates, pieceToCapture.coordinates);
+			},
+			pieces);
+	});
+var author$project$Board$movePiece = F3(
 	function (pieces, currentPiece, newCoordinates) {
 		return A2(
 			elm$core$List$cons,
@@ -4673,6 +4684,14 @@ var author$project$Board$updatePieces = F3(
 					return !_Utils_eq(piece.coordinates, currentPiece.coordinates);
 				},
 				pieces));
+	});
+var author$project$Board$moveAndCapture = F3(
+	function (pieces, currentPiece, pieceToCapture) {
+		return A3(
+			author$project$Board$movePiece,
+			A2(author$project$Board$capturePiece, pieces, pieceToCapture),
+			currentPiece,
+			pieceToCapture.coordinates);
 	});
 var author$project$Piece$Down = {$: 'Down'};
 var author$project$Piece$Left = {$: 'Left'};
@@ -5315,33 +5334,97 @@ var author$project$Piece$possibleRegularMoves = function (piece) {
 var author$project$Board$update = F2(
 	function (msg, model) {
 		var focusOn = msg.a;
-		if (focusOn.$ === 'FocusedPiece') {
-			var piece = focusOn.a;
-			return {
-				focusOn: focusOn,
-				pieces: model.pieces,
-				possibleMoves: elm$core$Set$toList(
-					author$project$Piece$possibleRegularMoves(piece))
-			};
-		} else {
-			var coordinates = focusOn.a;
-			var _n2 = model.focusOn;
-			if (_n2.$ === 'FocusedPiece') {
-				var piece = _n2.a;
+		switch (focusOn.$) {
+			case 'FocusedPiece':
+				var piece = focusOn.a;
 				return {
-					focusOn: author$project$Board$NoPiece(
-						_Utils_Tuple2(0, 0)),
-					pieces: A3(author$project$Board$updatePieces, model.pieces, piece, coordinates),
-					possibleMoves: _List_Nil
-				};
-			} else {
-				return {
-					focusOn: author$project$Board$NoPiece(
-						_Utils_Tuple2(0, 0)),
+					capturedPiecesBlack: model.capturedPiecesBlack,
+					capturedPiecesWhite: model.capturedPiecesWhite,
+					focusOn: focusOn,
 					pieces: model.pieces,
-					possibleMoves: _List_Nil
+					possibleMoves: elm$core$Set$toList(
+						author$project$Piece$possibleRegularMoves(piece))
 				};
-			}
+			case 'NoPiece':
+				var coordinates = focusOn.a;
+				var _n2 = model.focusOn;
+				switch (_n2.$) {
+					case 'FocusedPiece':
+						var piece = _n2.a;
+						return {
+							capturedPiecesBlack: model.capturedPiecesBlack,
+							capturedPiecesWhite: model.capturedPiecesWhite,
+							focusOn: author$project$Board$NoPiece(
+								_Utils_Tuple2(0, 0)),
+							pieces: A3(author$project$Board$movePiece, model.pieces, piece, coordinates),
+							possibleMoves: _List_Nil
+						};
+					case 'NoPiece':
+						return {
+							capturedPiecesBlack: model.capturedPiecesBlack,
+							capturedPiecesWhite: model.capturedPiecesWhite,
+							focusOn: author$project$Board$NoPiece(
+								_Utils_Tuple2(0, 0)),
+							pieces: model.pieces,
+							possibleMoves: _List_Nil
+						};
+					default:
+						return {
+							capturedPiecesBlack: model.capturedPiecesBlack,
+							capturedPiecesWhite: model.capturedPiecesWhite,
+							focusOn: author$project$Board$NoPiece(
+								_Utils_Tuple2(0, 0)),
+							pieces: model.pieces,
+							possibleMoves: _List_Nil
+						};
+				}
+			default:
+				var pieceToCapture = focusOn.a;
+				var _n3 = model.focusOn;
+				switch (_n3.$) {
+					case 'FocusedPiece':
+						var piece = _n3.a;
+						return {
+							capturedPiecesBlack: function () {
+								var _n4 = pieceToCapture.color;
+								if (_n4.$ === 'Black') {
+									return A2(elm$core$List$cons, pieceToCapture, model.capturedPiecesBlack);
+								} else {
+									return model.capturedPiecesBlack;
+								}
+							}(),
+							capturedPiecesWhite: function () {
+								var _n5 = pieceToCapture.color;
+								if (_n5.$ === 'Black') {
+									return model.capturedPiecesWhite;
+								} else {
+									return A2(elm$core$List$cons, pieceToCapture, model.capturedPiecesWhite);
+								}
+							}(),
+							focusOn: author$project$Board$NoPiece(
+								_Utils_Tuple2(0, 0)),
+							pieces: A3(author$project$Board$moveAndCapture, model.pieces, piece, pieceToCapture),
+							possibleMoves: _List_Nil
+						};
+					case 'NoPiece':
+						return {
+							capturedPiecesBlack: model.capturedPiecesBlack,
+							capturedPiecesWhite: model.capturedPiecesWhite,
+							focusOn: author$project$Board$NoPiece(
+								_Utils_Tuple2(0, 0)),
+							pieces: model.pieces,
+							possibleMoves: _List_Nil
+						};
+					default:
+						return {
+							capturedPiecesBlack: model.capturedPiecesBlack,
+							capturedPiecesWhite: model.capturedPiecesWhite,
+							focusOn: author$project$Board$NoPiece(
+								_Utils_Tuple2(0, 0)),
+							pieces: model.pieces,
+							possibleMoves: _List_Nil
+						};
+				}
 		}
 	});
 var author$project$Board$ClickOnCase = function (a) {
@@ -5350,7 +5433,51 @@ var author$project$Board$ClickOnCase = function (a) {
 var author$project$Board$FocusedPiece = function (a) {
 	return {$: 'FocusedPiece', a: a};
 };
-var author$project$Board$caseToImage = function (piece) {
+var author$project$Board$PieceToCapture = function (a) {
+	return {$: 'PieceToCapture', a: a};
+};
+var author$project$Board$Empty = {$: 'Empty'};
+var author$project$Board$Full = function (a) {
+	return {$: 'Full', a: a};
+};
+var elm$core$Basics$and = _Basics_and;
+var elm$core$Basics$eq = _Utils_equal;
+var author$project$Board$filterFromCoordinates = function (pos) {
+	return function (pieces) {
+		return A2(
+			elm$core$List$filter,
+			function (item) {
+				return _Utils_eq(item.coordinates.a, pos.a) && _Utils_eq(item.coordinates.b, pos.b);
+			},
+			pieces);
+	};
+};
+var elm$core$Maybe$Just = function (a) {
+	return {$: 'Just', a: a};
+};
+var elm$core$Maybe$Nothing = {$: 'Nothing'};
+var elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return elm$core$Maybe$Just(x);
+	} else {
+		return elm$core$Maybe$Nothing;
+	}
+};
+var author$project$Board$findCaseFromCoordinates = function (pos) {
+	return function (pieces) {
+		var _n0 = elm$core$List$head(
+			A2(author$project$Board$filterFromCoordinates, pos, pieces));
+		if (_n0.$ === 'Just') {
+			var piece = _n0.a;
+			return author$project$Board$Full(piece);
+		} else {
+			return author$project$Board$Empty;
+		}
+	};
+};
+var author$project$Board$srcImageFromPiece = function (piece) {
 	var _n0 = piece.pieceType;
 	switch (_n0.$) {
 		case 'King':
@@ -5396,47 +5523,6 @@ var author$project$Board$caseToImage = function (piece) {
 				return 'icon.pawn.dark.svg';
 			}
 	}
-};
-var author$project$Board$Empty = {$: 'Empty'};
-var author$project$Board$Full = function (a) {
-	return {$: 'Full', a: a};
-};
-var elm$core$Basics$and = _Basics_and;
-var elm$core$Basics$eq = _Utils_equal;
-var author$project$Board$filterFromCoordinates = function (pos) {
-	return function (pieces) {
-		return A2(
-			elm$core$List$filter,
-			function (item) {
-				return _Utils_eq(item.coordinates.a, pos.a) && _Utils_eq(item.coordinates.b, pos.b);
-			},
-			pieces);
-	};
-};
-var elm$core$Maybe$Just = function (a) {
-	return {$: 'Just', a: a};
-};
-var elm$core$Maybe$Nothing = {$: 'Nothing'};
-var elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return elm$core$Maybe$Just(x);
-	} else {
-		return elm$core$Maybe$Nothing;
-	}
-};
-var author$project$Board$findCaseFromCoordinates = function (pos) {
-	return function (pieces) {
-		var _n0 = elm$core$List$head(
-			A2(author$project$Board$filterFromCoordinates, pos, pieces));
-		if (_n0.$ === 'Just') {
-			var piece = _n0.a;
-			return author$project$Board$Full(piece);
-		} else {
-			return author$project$Board$Empty;
-		}
-	};
 };
 var elm$core$Basics$True = {$: 'True'};
 var elm$core$Basics$False = {$: 'False'};
@@ -5914,28 +6000,58 @@ var author$project$Board$buildCase = F3(
 					}
 				} else {
 					var piece = _n0.a;
-					return _List_fromArray(
-						[
-							A2(
-							elm$html$Html$button,
-							_List_fromArray(
-								[
-									elm$html$Html$Events$onClick(
-									author$project$Board$ClickOnCase(
-										author$project$Board$FocusedPiece(piece)))
-								]),
-							_List_fromArray(
-								[
-									A2(
-									elm$html$Html$img,
-									_List_fromArray(
-										[
-											elm$html$Html$Attributes$src(
-											'src/' + author$project$Board$caseToImage(piece))
-										]),
-									_List_Nil)
-								]))
-						]);
+					var _n2 = A2(
+						elm$core$List$member,
+						_Utils_Tuple2(posX, posY),
+						model.possibleMoves);
+					if (!_n2) {
+						return _List_fromArray(
+							[
+								A2(
+								elm$html$Html$button,
+								_List_fromArray(
+									[
+										elm$html$Html$Events$onClick(
+										author$project$Board$ClickOnCase(
+											author$project$Board$FocusedPiece(piece)))
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$img,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$src(
+												'src/' + author$project$Board$srcImageFromPiece(piece))
+											]),
+										_List_Nil)
+									]))
+							]);
+					} else {
+						return _List_fromArray(
+							[
+								A2(
+								elm$html$Html$button,
+								_List_fromArray(
+									[
+										elm$html$Html$Events$onClick(
+										author$project$Board$ClickOnCase(
+											author$project$Board$PieceToCapture(piece))),
+										elm$html$Html$Attributes$class('possible-move')
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$img,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$src(
+												'src/' + author$project$Board$srcImageFromPiece(piece))
+											]),
+										_List_Nil)
+									]))
+							]);
+					}
 				}
 			}());
 	});
@@ -5973,10 +6089,34 @@ var author$project$Board$buildBoard = F2(
 				]),
 			A2(author$project$Board$buildBoard, model, max - 1)) : _List_Nil;
 	});
+var author$project$Board$buildCapturedPieces = function (capturedPieces) {
+	return A2(
+		elm$core$List$map,
+		function (piece) {
+			return A2(
+				elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$img,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$src(
+								'src/' + author$project$Board$srcImageFromPiece(piece))
+							]),
+						_List_Nil)
+					]));
+		},
+		capturedPieces);
+};
 var author$project$Board$view = function (model) {
 	return A2(
 		elm$html$Html$div,
-		_List_Nil,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('board-container')
+			]),
 		_List_fromArray(
 			[
 				A2(
@@ -5985,7 +6125,30 @@ var author$project$Board$view = function (model) {
 					[
 						elm$html$Html$Attributes$class('board')
 					]),
-				A2(author$project$Board$buildBoard, model, 8))
+				A2(author$project$Board$buildBoard, model, 8)),
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('captured-pieces')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('captured-pieces-white')
+							]),
+						author$project$Board$buildCapturedPieces(model.capturedPiecesWhite)),
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('captured-pieces-black')
+							]),
+						author$project$Board$buildCapturedPieces(model.capturedPiecesBlack))
+					]))
 			]));
 };
 var elm$core$Platform$Cmd$batch = _Platform_batch;

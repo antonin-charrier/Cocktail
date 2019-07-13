@@ -15,6 +15,8 @@ type alias Model =
     { focusOn : FocusOn
     , pieces : List Piece.Piece
     , possibleMoves : List (Int, Int)
+    , capturedPiecesWhite : List Piece.Piece
+    , capturedPiecesBlack : List Piece.Piece
     }
 
 type Case = Full Piece.Piece
@@ -22,11 +24,14 @@ type Case = Full Piece.Piece
 
 type FocusOn = FocusedPiece Piece.Piece
     | NoPiece (Int, Int)
+    | PieceToCapture Piece.Piece
 
 
 initialModel : Model
 initialModel =
-    { focusOn = NoPiece ( 0, 0 ), pieces = [
+    { 
+        focusOn = NoPiece ( 0, 0 )
+        , pieces = [
             { coordinates = (1, 1), pieceType = Piece.Rook, color = Piece.White },
             { coordinates = (2, 1), pieceType = Piece.Knight, color = Piece.White },
             { coordinates = (3, 1), pieceType = Piece.Bishop, color = Piece.White },
@@ -59,7 +64,10 @@ initialModel =
             { coordinates = (6, 8), pieceType = Piece.Bishop, color = Piece.Black },
             { coordinates = (7, 8), pieceType = Piece.Knight, color = Piece.Black },
             { coordinates = (8, 8), pieceType = Piece.Rook, color = Piece.Black }
-        ], possibleMoves = []
+        ]
+        , possibleMoves = []
+        , capturedPiecesBlack = []
+        , capturedPiecesWhite = []
     }
 
 
@@ -73,24 +81,66 @@ update msg model =
         ClickOnCase focusOn ->
            case focusOn of
                 FocusedPiece piece ->
-                    { focusOn = focusOn, pieces = model.pieces, possibleMoves = Set.toList (Piece.possibleRegularMoves piece) }
+                    { focusOn = focusOn, pieces = model.pieces, possibleMoves = Set.toList (Piece.possibleRegularMoves piece)
+                        , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
                 NoPiece coordinates -> 
                     ( 
                         case model.focusOn of
                             FocusedPiece piece ->
-                                { focusOn = NoPiece ( 0, 0 ), pieces = ( updatePieces model.pieces piece coordinates ), possibleMoves = [] }
+                                { focusOn = NoPiece ( 0, 0 ), pieces = ( movePiece model.pieces piece coordinates ), possibleMoves = []
+                                    , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
                             NoPiece _ -> 
-                                { focusOn = NoPiece ( 0, 0 ), pieces = model.pieces, possibleMoves = [] }
+                                { focusOn = NoPiece ( 0, 0 ), pieces = model.pieces, possibleMoves = []
+                                    , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
+                            PieceToCapture _ -> 
+                                { focusOn = NoPiece ( 0, 0 ), pieces = model.pieces, possibleMoves = []
+                                    , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
                     )
+                PieceToCapture pieceToCapture ->
+                    case model.focusOn of
+                        FocusedPiece piece ->
+                            { focusOn = NoPiece ( 0, 0 ), pieces = ( moveAndCapture model.pieces piece pieceToCapture ), possibleMoves = []
+                                , capturedPiecesBlack = (
+                                    case pieceToCapture.color of
+                                        Piece.Black ->
+                                            pieceToCapture :: model.capturedPiecesBlack
+                                        Piece.White -> 
+                                            model.capturedPiecesBlack
+                                ), capturedPiecesWhite = (
+                                    case pieceToCapture.color of
+                                        Piece.Black ->
+                                            model.capturedPiecesWhite
+                                        Piece.White -> 
+                                            pieceToCapture :: model.capturedPiecesWhite
+                                ) }
+                        NoPiece _ -> 
+                            { focusOn = NoPiece ( 0, 0 ), pieces = model.pieces, possibleMoves = []
+                                , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
+                        PieceToCapture _ -> 
+                            { focusOn = NoPiece ( 0, 0 ), pieces = model.pieces, possibleMoves = []
+                                , capturedPiecesBlack = model.capturedPiecesBlack, capturedPiecesWhite = model.capturedPiecesWhite }
 
-updatePieces : List Piece.Piece -> Piece.Piece -> (Int, Int) -> List Piece.Piece
-updatePieces pieces currentPiece newCoordinates = 
+movePiece : List Piece.Piece -> Piece.Piece -> (Int, Int) -> List Piece.Piece
+movePiece pieces currentPiece newCoordinates = 
     { currentPiece | coordinates = newCoordinates } :: List.filter ( \piece -> piece.coordinates /= currentPiece.coordinates ) pieces
+
+capturePiece : List Piece.Piece -> Piece.Piece -> List Piece.Piece
+capturePiece pieces pieceToCapture =
+    List.filter ( \piece -> piece.coordinates /= pieceToCapture.coordinates ) pieces
+
+moveAndCapture : List Piece.Piece -> Piece.Piece -> Piece.Piece -> List Piece.Piece
+moveAndCapture pieces currentPiece pieceToCapture = 
+    movePiece ( capturePiece pieces pieceToCapture ) currentPiece pieceToCapture.coordinates
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ div [ class "board" ] (buildBoard model 8) ]
+    div [ class "board-container"] [ 
+        div [ class "board" ] (buildBoard model 8)
+        , div [ class "captured-pieces" ] [
+            div [ class "captured-pieces-white" ] (buildCapturedPieces model.capturedPiecesWhite)
+            , div [ class "captured-pieces-black" ] (buildCapturedPieces model.capturedPiecesBlack)
+        ]
+    ]
 
 
 main : Program () Model Msg
@@ -112,6 +162,10 @@ buildBoard model max =
     else
         []
 
+buildCapturedPieces : List Piece.Piece -> List (Html Msg)
+buildCapturedPieces capturedPieces = 
+    List.map ( \piece -> div [] [ img [ src ("src/" ++ (srcImageFromPiece piece)) ] [] ] ) capturedPieces
+
 buildLine : Model -> Int -> Int -> List (Html Msg)
 buildLine model id max =
     if max > 0 then
@@ -129,14 +183,23 @@ buildCase model posX posY =
                     (
                         case (List.member (posX, posY) model.possibleMoves) of
                             False ->
-                                [ button [ onClick (ClickOnCase ( NoPiece ( posX, posY ) ) ), disabled True ] [] ]
+                                [ button [ onClick ( ClickOnCase ( NoPiece ( posX, posY ) ) ), disabled True ] [] ]
                             True -> 
-                                [ button [ onClick (ClickOnCase ( NoPiece ( posX, posY ) ) ), class "possible-move" ] [] ]                                    
+                                [ button [ onClick ( ClickOnCase ( NoPiece ( posX, posY ) ) ), class "possible-move" ] [] ]                                    
                     )
                 Full piece -> 
-                    [ button [ onClick (ClickOnCase ( FocusedPiece piece ) ) ]
-                        [ img [ src ("src/" ++ (caseToImage piece)) ] [] ]
-                    ]                            
+                    (
+                        case (List.member (posX, posY) model.possibleMoves) of
+                            False ->
+                                [ button [ onClick ( ClickOnCase ( FocusedPiece piece ) ) ]
+                                    [ img [ src ("src/" ++ (srcImageFromPiece piece)) ] [] ]
+                                ]
+                            True -> 
+                                [ button [ onClick ( ClickOnCase ( PieceToCapture piece ) ), class "possible-move" ]
+                                    [ img [ src ("src/" ++ (srcImageFromPiece piece)) ] [] ]
+                                ]
+                    )
+                        
         )
 
 findCaseFromCoordinates : (Int, Int) -> List Piece.Piece -> Case
@@ -150,8 +213,8 @@ findCaseFromCoordinates =
 filterFromCoordinates = \pos -> \pieces ->
     List.filter (\item -> ((Tuple.first item.coordinates) == (Tuple.first pos) && (Tuple.second item.coordinates) == (Tuple.second pos))) pieces
     
-caseToImage : Piece.Piece -> String
-caseToImage = \piece ->        
+srcImageFromPiece : Piece.Piece -> String
+srcImageFromPiece = \piece ->        
     case piece.pieceType of
         Piece.King ->
             case piece.color of

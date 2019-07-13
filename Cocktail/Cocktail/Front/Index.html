@@ -2,9 +2,40 @@
 <head>
 <title>Cocktail</title>
   <style>
+    .board-container {
+      display: flex;
+      flex-direction: row;
+    }
     .board {
       border: 1px solid black;
       width: 800px;
+    }
+    .captured-pieces {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .captured-pieces-black {
+      flex-grow: 1;
+      background: lightgray;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    .captured-pieces-white {
+      flex-grow: 1;
+      background: dimgray;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }    
+    .captured-pieces-white img {
+      max-height: 80px;
+      max-width: 80px;
+    }
+    .captured-pieces-black img {
+      max-height: 80px;
+      max-width: 80px;
     }
     .line {
       width: 100%;
@@ -53,13 +84,29 @@
     .line:nth-child(2n) .case:nth-child(2n) button.possible-move {
       background-color: #82540E;
     }
+    .title {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 16px;
+    }
+    .title h1 {
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    }
+    .title img {
+      max-width: 80px;
+      max-height: 80px;
+      margin-right: 16px;
+    }
     
   </style>
 </head>
-<body>  
-	<h1>
-		Cocktail
-	</h1>
+<body>
+  <div class="title">
+      <img src="src/icon.cocktail.png"/>
+      <h1>
+        Cocktail Chess
+      </h1>    
+  </div>
 	<main></main>	
 	<script src="Cocktail.js"></script>
 	<script>
